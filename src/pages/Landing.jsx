@@ -134,8 +134,8 @@ function Navbar({ onEnterApp, onSignIn, onGetStarted }) {
             <span className={`${styles.themeIcon} ${theme === 'light' ? styles.visible : styles.hidden}`}><IconSun size={16}/></span>
             <span className={`${styles.themeIcon} ${theme === 'dark'  ? styles.visible : styles.hidden}`}><IconMoon size={16}/></span>
           </button>
-          <button className={styles.btnOutline} onClick={handleSignIn}>Sign In</button>
-          <button className={styles.btnFilled} onClick={handleGetStarted}>Get Started →</button>
+          <button className={styles.btnOutline} onClick={handleSignIn}>Login</button>
+          <button className={styles.btnFilled} onClick={handleGetStarted}>Sign up</button>
         </div>
 
         {/* Hamburger */}
@@ -156,8 +156,8 @@ function Navbar({ onEnterApp, onSignIn, onGetStarted }) {
             </a>
           ))}
           <div className={styles.mobileCtas}>
-            <button className={styles.btnOutline} onClick={() => { setMenuOpen(false); handleSignIn() }}>Sign In</button>
-            <button className={styles.btnFilled}  onClick={() => { setMenuOpen(false); handleGetStarted() }}>Get Started</button>
+            <button className={styles.btnOutline} onClick={() => { setMenuOpen(false); handleSignIn() }}>Login</button>
+            <button className={styles.btnFilled}  onClick={() => { setMenuOpen(false); handleGetStarted() }}>Sign up</button>
           </div>
         </div>
       )}
@@ -366,8 +366,8 @@ function CTABanner({ onEnterApp, onSignIn, onGetStarted }) {
         <h2 className={styles.ctaHeading}>Your next opportunity<br />is waiting for you</h2>
         <p className={styles.ctaSub}>Join thousands of students who found their internship or industrial attachment through IAS. It's free, fast, and built for you.</p>
         <div className={styles.ctaBtns}>
-          <button className={styles.btnHeroPrimary} onClick={createAccount}>Create Free Account →</button>
-          <button className={styles.btnHeroGhost}   onClick={browse}>Browse Opportunities</button>
+          <button className={styles.btnHeroPrimary} onClick={createAccount}>Sign up</button>
+          <button className={styles.btnHeroGhost}   onClick={browse}>Login — you already have an account</button>
         </div>
       </div>
     </section>

@@ -88,9 +88,9 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
           </button>
         )}
         <div className={styles.logo}>IAS</div>
-        <h1 className={styles.title}>{mode === 'login' ? 'Sign in' : 'Create account'}</h1>
+        <h1 className={styles.title}>{mode === 'login' ? 'Log in' : 'Sign up'}</h1>
         <p className={styles.sub}>
-          {mode === 'login' ? 'Enter your email and password.' : 'Register to browse and apply for opportunities.'}
+          {mode === 'login' ? 'You already have an account. Enter your email and password.' : 'Create an account to browse and apply for opportunities.'}
         </p>
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -149,7 +149,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
             />
           </label>
           <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
+            {loading ? 'Please wait…' : mode === 'login' ? 'Log in' : 'Sign up'}
           </button>
 
           {GOOGLE_CLIENT_ID && (
@@ -164,7 +164,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
           {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
           {' '}
           <button type="button" className={styles.toggleLink} onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>
-            {mode === 'login' ? 'Sign up' : 'Sign in'}
+            {mode === 'login' ? 'Sign up' : 'Log in'}
           </button>
         </p>
       </div>
