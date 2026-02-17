@@ -74,6 +74,10 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || err.message || 'Something went wrong'
       setError(msg)
+      if (mode === 'register' && (msg.toLowerCase().includes('already registered') || msg.toLowerCase().includes('email already'))) {
+        setMode('login')
+        setError('This email is already registered. Log in instead.')
+      }
     } finally {
       setLoading(false)
     }
@@ -89,9 +93,9 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
         )}
         <div className={styles.logo}>IAS</div>
         <h1 className={styles.title}>{mode === 'login' ? 'Log in' : 'Sign up'}</h1>
-        <p className={styles.sub}>
-          {mode === 'login' ? 'You already have an account. Enter your email and password.' : 'Create an account to browse and apply for opportunities.'}
-        </p>
+        {mode === 'register' && (
+          <p className={styles.sub}>Create an account to browse and apply for opportunities.</p>
+        )}
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {error && <div className={styles.error}>{error}</div>}
@@ -109,9 +113,9 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               />
             </label>
           )}
-          {(mode === 'register' || GOOGLE_CLIENT_ID) && (
+          {mode === 'register' && (
             <label className={styles.label}>
-              {GOOGLE_CLIENT_ID ? 'I am a (for new accounts / Google sign-in)' : 'I am a'}
+              I am a
               <select
                 className={styles.input}
                 value={role}
