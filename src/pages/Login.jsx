@@ -13,7 +13,10 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const googleButtonRef = useRef(null)
+  const modeRoleRef = useRef({ mode: initialMode, role: 'student' })
   const { login, register, loginWithGoogle } = useAuth()
+
+  modeRoleRef.current = { mode, role }
 
   useEffect(() => {
     if (!GOOGLE_CLIENT_ID) return
@@ -26,7 +29,9 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
           callback: (res) => {
             setError('')
             setLoading(true)
-            loginWithGoogle(res.credential)
+            const { mode: m, role: r } = modeRoleRef.current
+            const selectedRole = m === 'register' ? r : undefined
+            loginWithGoogle(res.credential, selectedRole)
               .catch(err => {
                 const msg = err.response?.data?.message || err.message || 'Google sign-in failed.'
                 setError(msg)

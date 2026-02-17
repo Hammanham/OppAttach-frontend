@@ -35,8 +35,8 @@ export function AuthProvider({ children }) {
     return res.data
   }
 
-  const loginWithGoogle = async (idToken) => {
-    const res = await authService.loginGoogle(idToken)
+  const loginWithGoogle = async (idToken, role) => {
+    const res = await authService.loginGoogle(idToken, role)
     if (res.data.token) localStorage.setItem('ias_token', res.data.token)
     setUser(res.data.user)
     return res.data
