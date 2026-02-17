@@ -1,0 +1,42 @@
+import { createContext, useContext, useState, useEffect } from 'react'
+import { authService } from '../services/api'
+
+const AuthContext = createContext(null)
+
+export function AuthProvider({ children }) {
+  const [user, setUser]       = useState(null)
+  const [loading, setLoading] = useState(true)
+
+  // On mount — try to restore session from backend
+  useEffect(() => {
+    authService.me()
+      .then(res => setUser(res.data))
+      .catch(() => setUser(null))
+      .finally(() => setLoading(false))
+  }, [])
+
+  const login = async (credentials) => {
+    const res = await authService.login(credentials)
+    if (res.data.token) localStorage.setItem('ias_token', res.data.token)
+    setUser(res.data.user)
+    return res.data
+  }
+
+  const logout = async () => {
+    await authService.logout().catch(() => {})
+    localStorage.removeItem('ias_token')
+    setUser(null)
+  }
+
+  return (
+    <AuthContext.Provider value={{ user, loading, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  )
+}
+
+export const useAuth = () => {
+  const ctx = useContext(AuthContext)
+  if (!ctx) throw new Error('useAuth must be used within AuthProvider')
+  return ctx
+}
