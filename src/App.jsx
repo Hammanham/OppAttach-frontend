@@ -38,7 +38,7 @@ function AppShell() {
 
   const user = authUser ? {
     name: authUser.name || 'User',
-    role: authUser.role === 'admin' ? 'Admin' : 'Student',
+    role: authUser.role === 'admin' ? 'Admin' : authUser.role === 'graduate' ? 'Graduate' : 'Student',
     initials: (authUser.name || 'U').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase(),
   } : { name: 'Guest', role: 'Student', initials: 'GU' }
   const isAdmin = authUser?.role === 'admin'

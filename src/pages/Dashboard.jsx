@@ -3,6 +3,7 @@ import { useCounter } from '../hooks/useCounter'
 import { IconFile, IconCheck, IconEye, IconHeart, IconBookmark, IconPlus, IconChevronRight, IconFilter } from '../components/Icons'
 import { dashboardService, applicationService, opportunityService } from '../services/api'
 import { FILTER_TABS } from '../data/mockData'
+import ApplyForm from '../components/ApplyForm'
 
 /* ─── Helpers ─────────────────────────────────────────────────── */
 const BACKEND_STATUS_TO_UI = {
@@ -80,7 +81,7 @@ function StatCard({ stat, delay }) {
 }
 
 /* ─── OpportunityItem ─────────────────────────────────────────── */
-function OpportunityItem({ opp, isSaved }) {
+function OpportunityItem({ opp, onApply }) {
   return (
     <div className="opp-item">
       <div className="company-logo" style={{ background: opp.logoBg, color: opp.logoColor, borderColor: opp.logoBg }}>
@@ -96,7 +97,11 @@ function OpportunityItem({ opp, isSaved }) {
       </div>
       <div className="opp-meta">
         <div className="opp-date">Closes {opp.closingDate}</div>
-        <span className="save-btn" style={{ opacity: 0.5 }} aria-hidden />
+        {onApply && (
+          <button type="button" className="btn btn-primary btn-sm" onClick={() => onApply(opp)}>
+            Apply
+          </button>
+        )}
       </div>
     </div>
   )
@@ -150,6 +155,7 @@ export default function Dashboard({ setActiveNav }) {
   const [recommended, setRecommended] = useState([])
   const [saved, setSaved] = useState([])
   const [loading, setLoading] = useState(true)
+  const [applyOpportunity, setApplyOpportunity] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -192,6 +198,7 @@ export default function Dashboard({ setActiveNav }) {
         const typeDisplay = o.type === 'attachment' ? 'Industrial Attachment' : o.type === 'internship' ? 'Internship' : o.type
         return {
           id: o._id,
+          _id: o._id,
           title: o.title,
           company: o.company,
           location: o.location,
@@ -202,6 +209,7 @@ export default function Dashboard({ setActiveNav }) {
           logoInitials: getInitials(o.company),
           logoBg: colors.bg,
           logoColor: colors.color,
+          applicationFee: o.applicationFee ?? 350,
         }
       }) : [])
       setSaved(Array.isArray(savedData) ? savedData : [])
@@ -224,6 +232,32 @@ export default function Dashboard({ setActiveNav }) {
 
   return (
     <div className="content">
+      {applyOpportunity && (
+        <ApplyForm
+          opportunity={applyOpportunity}
+          onSuccess={() => {
+          setApplyOpportunity(null)
+          applicationService.getAll().then(r => r.data).then(appsData => {
+            setApplications(Array.isArray(appsData) ? appsData.map((a, i) => {
+              const opp = a.opportunityId || {}
+              const colors = getLogoColors(i)
+              const typeDisplay = opp.type === 'attachment' ? 'Industrial Attachment' : opp.type === 'internship' ? 'Internship' : opp.type
+              return { id: a._id, company: opp.company || '—', role: opp.title || '—', type: a.type, typeDisplay, applied: formatDate(a.createdAt), deadline: formatDate(opp.deadline), status: a.status, initials: getInitials(opp.company), logoBg: colors.bg, logoColor: colors.color }
+            }) : [])
+          }).catch(() => {})
+          dashboardService.getStats().then(r => r.data).then(s => setStats(s)).catch(() => {})
+          dashboardService.getActivity(10).then(r => r.data).then(activityData => {
+            setActivity(activityData.map((a) => {
+              const opp = a.opportunity || {}
+              const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
+              const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
+              return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', text, time: formatActivityTime(a.createdAt) }
+            }))
+          }).catch(() => {})
+        }}
+          onCancel={() => setApplyOpportunity(null)}
+        />
+      )}
       {/* Hero Strip */}
       <div className="hero-strip animate-fade-up" style={{ animationDelay: '.05s' }}>
         <div className="hero-text">
@@ -293,7 +327,7 @@ export default function Dashboard({ setActiveNav }) {
               {loading ? (
                 <p style={{ color: 'var(--text3)', fontSize: '13px', padding: '12px 0' }}>Loading…</p>
               ) : filteredOpps.length > 0 ? (
-                filteredOpps.map(opp => <OpportunityItem key={opp.id} opp={opp} />)
+                filteredOpps.map(opp => <OpportunityItem key={opp.id} opp={opp} onApply={setApplyOpportunity} />)
               ) : (
                 <p style={{ color: 'var(--text3)', fontSize: '13px', padding: '12px 0' }}>No opportunities in this category yet. Browse all roles to find a fit.</p>
               )}

@@ -93,7 +93,7 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
             </div>
             <div className={styles.userInfo}>
               <div className={styles.userName}>{user ? user.name : 'Amara Kamara'}</div>
-              <div className={styles.userRole}>{user ? user.role : 'Student · Year 3'}</div>
+              <div className={styles.userRole}>{user ? user.role : 'Student'}</div>
             </div>
             <IconDots size={14} style={{ color: 'var(--text3)', flexShrink: 0 }} />
           </div>
