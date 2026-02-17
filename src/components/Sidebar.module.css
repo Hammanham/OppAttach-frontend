@@ -209,6 +209,24 @@
   color: var(--text3);
 }
 
+.logoutBtn {
+  margin-top: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--text2);
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+  transition: background var(--transition), color var(--transition);
+}
+.logoutBtn:hover {
+  background: var(--bg2);
+  color: var(--text);
+}
+
 /* ─── Mobile ─── */
 .overlay {
   display: none;

@@ -66,7 +66,7 @@
   border-radius: 9px;
   display: grid;
   place-items: center;
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 800;
   font-size: 13px;
   color: #fff;
@@ -86,7 +86,7 @@
 }
 
 .logoText {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 700;
   font-size: 16px;
   color: var(--text);
@@ -329,13 +329,14 @@
 }
 
 .heroHeading {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: clamp(36px, 5vw, 58px);
   font-weight: 800;
-  letter-spacing: -1.5px;
+  letter-spacing: -0.02em;
   color: var(--text);
   line-height: 1.1;
   margin-bottom: 22px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .heroAccent {
@@ -429,7 +430,7 @@
   border: 2px solid var(--bg);
   display: grid;
   place-items: center;
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 700;
   font-size: 10px;
   color: #fff;
@@ -472,7 +473,7 @@
 }
 
 .heroCardTitle {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 600;
   font-size: 14px;
   color: var(--text);
@@ -517,7 +518,7 @@
   border-radius: 8px;
   display: grid;
   place-items: center;
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 700;
   font-size: 11px;
   flex-shrink: 0;
@@ -586,7 +587,7 @@
 .statItem:last-child { border-right: none; }
 
 .statValue {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 36px;
   font-weight: 800;
   color: var(--text);
@@ -630,13 +631,14 @@
 }
 
 .sectionHeading {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: clamp(28px, 4vw, 42px);
   font-weight: 700;
-  letter-spacing: -1px;
+  letter-spacing: -0.02em;
   color: var(--text);
   line-height: 1.2;
   margin-bottom: 16px;
+  -webkit-font-smoothing: antialiased;
 }
 
 .sectionSub {
@@ -691,7 +693,7 @@
 }
 
 .featureTitle {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
@@ -719,7 +721,7 @@
 }
 
 .stepNum {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 48px;
   font-weight: 800;
   color: var(--accent);
@@ -739,7 +741,7 @@
 }
 
 .stepTitle {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 16px;
   font-weight: 600;
   color: var(--text);
@@ -778,7 +780,7 @@
 }
 
 .quoteIcon {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 60px;
   font-weight: 800;
   color: var(--accent);
@@ -806,7 +808,7 @@
   border-radius: 50%;
   display: grid;
   place-items: center;
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-weight: 700;
   font-size: 13px;
   flex-shrink: 0;
@@ -858,13 +860,14 @@
 }
 
 .ctaHeading {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: clamp(28px, 4vw, 48px);
   font-weight: 800;
-  letter-spacing: -1.2px;
+  letter-spacing: -0.02em;
   line-height: 1.15;
   margin-bottom: 20px;
   color: #F7F4EF;
+  -webkit-font-smoothing: antialiased;
 }
 
 .ctaSub {
@@ -944,7 +947,7 @@
 }
 
 .footerColTitle {
-  font-family: 'Syne', sans-serif;
+  font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
   font-size: 12px;
   font-weight: 600;
   letter-spacing: .06em;

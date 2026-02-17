@@ -97,10 +97,12 @@ function useInView(threshold = 0.15) {
 }
 
 /* ─── Navbar ─────────────────────────────────────────────────── */
-function Navbar({ onEnterApp }) {
+function Navbar({ onEnterApp, onSignIn, onGetStarted }) {
   const { theme, toggleTheme } = useTheme()
   const [scrolled, setScrolled] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const handleSignIn = onSignIn || onEnterApp
+  const handleGetStarted = onGetStarted || onEnterApp
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20)
@@ -132,8 +134,8 @@ function Navbar({ onEnterApp }) {
             <span className={`${styles.themeIcon} ${theme === 'light' ? styles.visible : styles.hidden}`}><IconSun size={16}/></span>
             <span className={`${styles.themeIcon} ${theme === 'dark'  ? styles.visible : styles.hidden}`}><IconMoon size={16}/></span>
           </button>
-          <button className={styles.btnOutline} onClick={onEnterApp}>Sign In</button>
-          <button className={styles.btnFilled} onClick={onEnterApp}>Get Started →</button>
+          <button className={styles.btnOutline} onClick={handleSignIn}>Sign In</button>
+          <button className={styles.btnFilled} onClick={handleGetStarted}>Get Started →</button>
         </div>
 
         {/* Hamburger */}
@@ -154,8 +156,8 @@ function Navbar({ onEnterApp }) {
             </a>
           ))}
           <div className={styles.mobileCtas}>
-            <button className={styles.btnOutline} onClick={() => { setMenuOpen(false); onEnterApp() }}>Sign In</button>
-            <button className={styles.btnFilled}  onClick={() => { setMenuOpen(false); onEnterApp() }}>Get Started</button>
+            <button className={styles.btnOutline} onClick={() => { setMenuOpen(false); handleSignIn() }}>Sign In</button>
+            <button className={styles.btnFilled}  onClick={() => { setMenuOpen(false); handleGetStarted() }}>Get Started</button>
           </div>
         </div>
       )}
@@ -164,7 +166,8 @@ function Navbar({ onEnterApp }) {
 }
 
 /* ─── Hero ───────────────────────────────────────────────────── */
-function Hero({ onEnterApp }) {
+function Hero({ onEnterApp, onSignIn, onGetStarted }) {
+  const enter = onSignIn || onGetStarted || onEnterApp
   return (
     <section className={styles.hero}>
       {/* Background orbs */}
@@ -192,11 +195,11 @@ function Hero({ onEnterApp }) {
         </p>
 
         <div className={`${styles.heroCtas} ${styles.fadeUp}`} style={{ animationDelay: '.28s' }}>
-          <button className={styles.btnHeroPrimary} onClick={onEnterApp}>
+          <button className={styles.btnHeroPrimary} onClick={enter}>
             Browse Opportunities
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
-          <button className={styles.btnHeroGhost} onClick={onEnterApp}>
+          <button className={styles.btnHeroGhost} onClick={enter}>
             For Companies
           </button>
         </div>
@@ -238,7 +241,7 @@ function Hero({ onEnterApp }) {
             </div>
           ))}
 
-          <button className={styles.heroCardBtn} onClick={onEnterApp}>View all 124 roles →</button>
+          <button className={styles.heroCardBtn} onClick={enter}>View all 124 roles →</button>
         </div>
       </div>
     </section>
@@ -351,8 +354,10 @@ function Testimonials() {
 }
 
 /* ─── CTA Banner ─────────────────────────────────────────────── */
-function CTABanner({ onEnterApp }) {
+function CTABanner({ onEnterApp, onSignIn, onGetStarted }) {
   const [ref, inView] = useInView()
+  const createAccount = onGetStarted || onEnterApp
+  const browse = onSignIn || onEnterApp
   return (
     <section className={styles.ctaSection} ref={ref}>
       <div className={styles.ctaOrb1} aria-hidden />
@@ -361,8 +366,8 @@ function CTABanner({ onEnterApp }) {
         <h2 className={styles.ctaHeading}>Your next opportunity<br />is waiting for you</h2>
         <p className={styles.ctaSub}>Join thousands of students who found their internship or industrial attachment through IAS. It's free, fast, and built for you.</p>
         <div className={styles.ctaBtns}>
-          <button className={styles.btnHeroPrimary} onClick={onEnterApp}>Create Free Account →</button>
-          <button className={styles.btnHeroGhost}   onClick={onEnterApp}>Browse Opportunities</button>
+          <button className={styles.btnHeroPrimary} onClick={createAccount}>Create Free Account →</button>
+          <button className={styles.btnHeroGhost}   onClick={browse}>Browse Opportunities</button>
         </div>
       </div>
     </section>
@@ -413,16 +418,16 @@ function Footer() {
 }
 
 /* ═══ Landing Page (root export) ═══════════════════════════════ */
-export default function Landing({ onEnterApp }) {
+export default function Landing({ onEnterApp, onSignIn, onGetStarted }) {
   return (
     <div className={styles.landing}>
-      <Navbar onEnterApp={onEnterApp} />
-      <Hero    onEnterApp={onEnterApp} />
+      <Navbar onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
+      <Hero onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
       <StatsBand />
       <Features />
       <HowItWorks />
       <Testimonials />
-      <CTABanner onEnterApp={onEnterApp} />
+      <CTABanner onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
       <Footer />
     </div>
   )

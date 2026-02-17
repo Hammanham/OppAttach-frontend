@@ -2,7 +2,7 @@ import { useState } from 'react'
 import {
   IconGrid, IconSearch, IconFile, IconHeart,
   IconUser, IconMessage, IconBell, IconBook,
-  IconStar, IconSettings, IconDots,
+  IconStar, IconSettings, IconDots, IconShield,
 } from './Icons'
 import styles from './Sidebar.module.css'
 
@@ -17,6 +17,7 @@ const NAV_ICONS = {
   cv:           <IconBook size={17} />,
   guidance:     <IconStar size={17} />,
   settings:     <IconSettings size={17} />,
+  admin:        <IconShield size={17} />,
 }
 
 function NavItem({ item, active, onClick }) {
@@ -32,14 +33,12 @@ function NavItem({ item, active, onClick }) {
   )
 }
 
-export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user }) {
+export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user, onLogout, isAdmin }) {
   return (
     <>
-      {/* Mobile overlay */}
       {isOpen && <div className={styles.overlay} onClick={onClose} />}
 
       <aside className={`${styles.sidebar} ${isOpen ? styles.open : ''}`}>
-        {/* Logo */}
         <div className={styles.header}>
           <div className={styles.logo}>
             <div className={styles.logoMark}>IAS</div>
@@ -48,13 +47,12 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
           <p className={styles.logoTagline}>Internships &amp; Attachments</p>
         </div>
 
-        {/* Navigation */}
         <nav className={styles.nav}>
           <p className={styles.sectionLabel}>Overview</p>
           {[
             { id: 'dashboard',    label: 'Dashboard',            badge: null },
-            { id: 'browse',       label: 'Browse Opportunities', badge: 124 },
-            { id: 'applications', label: 'My Applications',      badge: 3 },
+            { id: 'browse',       label: 'Browse Opportunities', badge: null },
+            { id: 'applications', label: 'My Applications',      badge: null },
             { id: 'saved',        label: 'Saved',                badge: null },
           ].map(item => (
             <NavItem key={item.id} item={item} active={activeNav === item.id} onClick={(id) => { setActiveNav(id); onClose(); }} />
@@ -69,6 +67,14 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
             <NavItem key={item.id} item={item} active={activeNav === item.id} onClick={(id) => { setActiveNav(id); onClose(); }} />
           ))}
 
+          {isAdmin && (
+            <>
+              <p className={styles.sectionLabel}>Admin</p>
+              {[{ id: 'admin', label: 'Admin Dashboard', badge: null }].map(item => (
+                <NavItem key={item.id} item={item} active={activeNav === item.id} onClick={(id) => { setActiveNav(id); onClose(); }} />
+              ))}
+            </>
+          )}
           <p className={styles.sectionLabel}>Resources</p>
           {[
             { id: 'cv',       label: 'CV Builder',      badge: null },
@@ -79,7 +85,7 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
           ))}
         </nav>
 
-        {/* User chip */}
+        {/* User chip + Sign out */}
         <div className={styles.footer}>
           <div className={styles.userChip}>
             <div className={styles.avatar}>
@@ -91,6 +97,9 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
             </div>
             <IconDots size={14} style={{ color: 'var(--text3)', flexShrink: 0 }} />
           </div>
+          {onLogout && (
+            <button type="button" className={styles.logoutBtn} onClick={onLogout}>Sign out</button>
+          )}
         </div>
       </aside>
     </>

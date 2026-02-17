@@ -35,9 +35,9 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired / not authenticated → redirect to login
+      // Token expired / not authenticated → go to landing so user can sign in
       localStorage.removeItem('ias_token')
-      window.location.href = '/login'
+      window.location.href = '/'
     }
     return Promise.reject(error)
   }
@@ -47,10 +47,11 @@ api.interceptors.response.use(
 // AUTH
 // ══════════════════════════════════════════════════════════════
 export const authService = {
-  login:   (credentials) => api.post('/auth/login', credentials),
-  logout:  ()            => api.post('/auth/logout'),
-  me:      ()            => api.get('/auth/me'),
-  refresh: ()            => api.post('/auth/refresh'),
+  register: (data)     => api.post('/auth/register', data),
+  login:    (credentials) => api.post('/auth/login', credentials),
+  logout:   ()            => api.post('/auth/logout'),
+  me:       ()            => api.get('/auth/me'),
+  refresh:  ()            => api.post('/auth/refresh'),
 }
 
 // ══════════════════════════════════════════════════════════════
@@ -65,25 +66,24 @@ export const dashboardService = {
 // OPPORTUNITIES
 // ══════════════════════════════════════════════════════════════
 export const opportunityService = {
-  getAll:      (params) => api.get('/opportunities', { params }),
-  getById:     (id)     => api.get(`/opportunities/${id}`),
+  getAll:       (params) => api.get('/opportunities', { params }),
+  getById:      (id)     => api.get(`/opportunities/${id}`),
   getRecommended: ()    => api.get('/opportunities/recommended'),
-  save:        (id)     => api.post(`/opportunities/${id}/save`),
-  unsave:      (id)     => api.delete(`/opportunities/${id}/save`),
-  getSaved:    ()       => api.get('/opportunities/saved'),
+  save:         (id)     => api.post(`/opportunities/${id}/save`),
+  unsave:       (id)     => api.delete(`/opportunities/${id}/save`),
+  getSaved:     ()       => api.get('/opportunities/saved'),
+  getAdminAll:  (params) => api.get('/opportunities/admin/all', { params }),
+  create:       (data)   => api.post('/opportunities', data),
+  update:       (id, d)  => api.patch(`/opportunities/${id}`, d),
 }
 
 // ══════════════════════════════════════════════════════════════
 // APPLICATIONS
 // ══════════════════════════════════════════════════════════════
 export const applicationService = {
-  getAll:    (params) => api.get('/applications', { params }),
-  getById:   (id)     => api.get(`/applications/${id}`),
-  /**
-   * Create application. Pass FormData (with resume, optional recommendationLetter, opportunityId, coverLetter, phoneNumber)
-   * or an object: { opportunityId, coverLetter?, phoneNumber?, resume: File, recommendationLetter?: File }.
-   */
-  create:    (payload) => {
+  getAll:       (params) => api.get('/applications', { params }),
+  getById:     (id)     => api.get(`/applications/${id}`),
+  create:      (payload) => {
     if (payload instanceof FormData) {
       return api.post('/applications', payload);
     }
@@ -95,8 +95,10 @@ export const applicationService = {
     if (payload.recommendationLetter instanceof File) form.append('recommendationLetter', payload.recommendationLetter);
     return api.post('/applications', form);
   },
-  update:    (id, d)  => api.patch(`/applications/${id}`, d),
-  withdraw:  (id)     => api.delete(`/applications/${id}`),
+  pay:         (id, data) => api.post(`/applications/${id}/pay`, data),
+  update:      (id, d)  => api.patch(`/applications/${id}`, d),
+  withdraw:    (id)     => api.delete(`/applications/${id}`),
+  getAllAdmin: (params) => api.get('/applications/admin/all', { params }),
 }
 
 // ══════════════════════════════════════════════════════════════
