@@ -9,6 +9,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
+  const [role, setRole] = useState('student') // 'student' | 'graduate'
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const googleButtonRef = useRef(null)
@@ -64,7 +65,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
       if (mode === 'login') {
         await login({ email, password })
       } else {
-        await register({ name, email, password })
+        await register({ name, email, password, role })
       }
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || err.message || 'Something went wrong'
@@ -102,6 +103,20 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
                 autoComplete="name"
                 placeholder="Your name"
               />
+            </label>
+          )}
+          {mode === 'register' && (
+            <label className={styles.label}>
+              I am a
+              <select
+                className={styles.input}
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+                aria-label="Account type"
+              >
+                <option value="student">Student</option>
+                <option value="graduate">Graduate</option>
+              </select>
             </label>
           )}
           <label className={styles.label}>
