@@ -26,7 +26,10 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
             setError('')
             setLoading(true)
             loginWithGoogle(res.credential)
-              .catch(err => setError(err.response?.data?.message || 'Google sign-in failed.'))
+              .catch(err => {
+                const msg = err.response?.data?.message || err.message || 'Google sign-in failed.'
+                setError(msg)
+              })
               .finally(() => setLoading(false))
           },
         })
