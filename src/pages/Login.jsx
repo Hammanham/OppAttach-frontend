@@ -29,9 +29,8 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
           callback: (res) => {
             setError('')
             setLoading(true)
-            const { mode: m, role: r } = modeRoleRef.current
-            const selectedRole = m === 'register' ? r : undefined
-            loginWithGoogle(res.credential, selectedRole)
+            const { role: r } = modeRoleRef.current
+            loginWithGoogle(res.credential, r)
               .catch(err => {
                 const msg = err.response?.data?.message || err.message || 'Google sign-in failed.'
                 setError(msg)
@@ -110,9 +109,9 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               />
             </label>
           )}
-          {mode === 'register' && (
+          {(mode === 'register' || GOOGLE_CLIENT_ID) && (
             <label className={styles.label}>
-              I am a
+              {GOOGLE_CLIENT_ID ? 'I am a (for new accounts / Google sign-in)' : 'I am a'}
               <select
                 className={styles.input}
                 value={role}
