@@ -2,7 +2,7 @@ import { useTheme } from '../context/ThemeContext'
 import { IconMenu, IconSearch, IconBell, IconSun, IconMoon } from './Icons'
 import styles from './Topbar.module.css'
 
-export default function Topbar({ title, onMenuClick }) {
+export default function Topbar({ title, onMenuClick, onNotificationsClick }) {
   const { theme, toggleTheme } = useTheme()
 
   return (
@@ -26,7 +26,7 @@ export default function Topbar({ title, onMenuClick }) {
         </div>
 
         {/* Notifications */}
-        <button className={styles.iconBtn} aria-label="Notifications">
+        <button className={styles.iconBtn} onClick={onNotificationsClick} aria-label="Notifications">
           <IconBell size={18} />
           <span className={styles.notifDot} aria-hidden="true" />
         </button>

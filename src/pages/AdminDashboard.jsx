@@ -113,7 +113,7 @@ export default function AdminDashboard() {
                 <label className={styles.label}>Type
                   <select className={styles.input} value={form.type} onChange={e => setForm(f => ({ ...f, type: e.target.value }))}>
                     <option value="internship">Internship</option>
-                    <option value="attachment">Attachment</option>
+                    <option value="attachment">Industrial Attachment</option>
                   </select>
                 </label>
                 <label className={styles.label}>Description <textarea className={styles.textarea} value={form.description} onChange={e => setForm(f => ({ ...f, description: e.target.value }))} rows={3} required /></label>

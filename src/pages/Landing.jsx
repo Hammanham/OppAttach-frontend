@@ -13,7 +13,7 @@ const FEATURES = [
   {
     icon: '🏢',
     title: '200+ Partner Companies',
-    desc: 'From telecoms to mining, banking to tech startups — we partner with leading Ghanaian and regional employers seeking student talent.',
+    desc: 'From telecoms to mining, banking to tech startups — we partner with leading Kenyan and regional employers seeking student talent.',
   },
   {
     icon: '📄',
@@ -46,9 +46,9 @@ const STEPS = [
 
 const TESTIMONIALS = [
   {
-    quote: "I got my attachment at Vodafone Ghana through IAS. The process took less than a week from application to confirmation. Incredible platform.",
-    name: 'Kwame Asante',
-    role: 'Computer Science, Year 3 — KNUST',
+    quote: "I got my industrial attachment at Safaricom through IAS. The process took less than a week from application to confirmation. Incredible platform.",
+    name: 'James Otieno',
+    role: 'Computer Science, Year 3 — University of Nairobi',
     initials: 'KA',
     color: '#E65100',
     bg: '#FFF3E0',
@@ -56,15 +56,15 @@ const TESTIMONIALS = [
   {
     quote: "As a recruiter, IAS saves us enormous time. We post a role and get qualified, verified student applicants immediately. Highly recommend.",
     name: 'Abena Mensah',
-    role: 'Talent Lead — Ghana Commercial Bank',
+    role: 'Talent Lead — KCB Group',
     initials: 'AM',
     color: '#1B5E20',
     bg: '#E8F5E9',
   },
   {
-    quote: "The deadline reminders and application tracker kept me organised across 6 applications. I landed my dream internship at MTN Group.",
-    name: 'Esi Boateng',
-    role: 'Finance, Year 4 — UG Legon',
+    quote: "The deadline reminders and application tracker kept me organised across 6 applications. I landed my dream internship at Equity Bank.",
+    name: 'Grace Wanjiku',
+    role: 'Finance, Year 4 — Kenyatta University',
     initials: 'EB',
     color: '#0D47A1',
     bg: '#E3F2FD',
@@ -189,7 +189,7 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
         </h1>
 
         <p className={`${styles.heroSub} ${styles.fadeUp}`} style={{ animationDelay: '.20s' }}>
-          IAS connects students with leading companies across Ghana and beyond.
+          IAS connects students with leading companies across Kenya and beyond.
           Browse hundreds of verified opportunities, apply in minutes, and track
           every stage of your placement journey.
         </p>
@@ -212,7 +212,7 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
               </div>
             ))}
           </div>
-          <span className={styles.trustText}>Joined by <strong>12,000+ students</strong> across Ghana</span>
+          <span className={styles.trustText}>Joined by <strong>12,000+ students</strong> across Kenya</span>
         </div>
       </div>
 
@@ -227,9 +227,9 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
           </div>
 
           {[
-            { initials:'MT', bg:'#FFF3E0', color:'#E65100', title:'Software Engineering Intern', company:'MTN Group', type:'6-month Attachment', tag:'New', tagColor: 'green' },
-            { initials:'VF', bg:'#E3F2FD', color:'#0D47A1', title:'Data Analyst Intern',        company:'Vodafone Ghana', type:'Attachment', tag:'Closing Soon', tagColor: 'amber' },
-            { initials:'GH', bg:'#E8F5E9', color:'#1B5E20', title:'Finance Attachment',          company:'Ghana Commercial Bank', type:'3-month Internship', tag:'New', tagColor: 'green' },
+            { initials:'SF', bg:'#FFF3E0', color:'#E65100', title:'Software Engineering Intern', company:'Safaricom', type:'6-month Industrial Attachment', tag:'New', tagColor: 'green' },
+            { initials:'KP', bg:'#E3F2FD', color:'#0D47A1', title:'Data Analyst Intern',        company:'Kenya Power', type:'Internship', tag:'Closing Soon', tagColor: 'amber' },
+            { initials:'KB', bg:'#E8F5E9', color:'#1B5E20', title:'Finance Industrial Attachment', company:'KCB Group', type:'3-month Internship', tag:'New', tagColor: 'green' },
           ].map((r, i) => (
             <div key={i} className={styles.miniRole} style={{ animationDelay: `${.3 + i * .08}s` }}>
               <div className={styles.miniLogo} style={{ background: r.bg, color: r.color }}>{r.initials}</div>
@@ -384,7 +384,7 @@ function Footer() {
             <div className={styles.logoMark}>IAS</div>
             <span className={styles.logoText}>IAS Platform</span>
           </div>
-          <p className={styles.footerTagline}>Connecting students with quality internship and industrial attachment opportunities across Ghana and beyond.</p>
+          <p className={styles.footerTagline}>Connecting students with quality internship and industrial attachment opportunities across Kenya and beyond.</p>
         </div>
 
         <div className={styles.footerLinks}>
@@ -411,7 +411,7 @@ function Footer() {
 
       <div className={styles.footerBottom}>
         <span>© {new Date().getFullYear()} IAS Platform. All rights reserved.</span>
-        <span>Made with care for Ghanaian students 🇬🇭</span>
+        <span>Made with care for Kenyan students 🇰🇪</span>
       </div>
     </footer>
   )

@@ -44,7 +44,7 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
             <div className={styles.logoMark}>IAS</div>
             <span className={styles.logoName}>IAS Platform</span>
           </div>
-          <p className={styles.logoTagline}>Internships &amp; Attachments</p>
+          <p className={styles.logoTagline}>Internships &amp; Industrial Attachments</p>
         </div>
 
         <nav className={styles.nav}>

@@ -11,14 +11,11 @@ import Applications from './pages/Applications'
 import Saved     from './pages/Saved'
 import Profile   from './pages/Profile'
 import Messages  from './pages/Messages'
+import Notifications from './pages/Notifications'
+import CVBuilder from './pages/CVBuilder'
+import CareerGuidance from './pages/CareerGuidance'
+import Settings  from './pages/Settings'
 import AdminDashboard from './pages/AdminDashboard'
-
-const ComingSoon = ({ name }) => (
-  <div style={{ padding: '40px 32px', color: 'var(--text2)', fontFamily: 'DM Sans, sans-serif' }}>
-    <h2 style={{ fontFamily: 'Syne, sans-serif', color: 'var(--text)', marginBottom: 8 }}>{name}</h2>
-    <p>This section is coming soon.</p>
-  </div>
-)
 
 const PAGE_TITLES = {
   dashboard:    'Dashboard',
@@ -55,9 +52,11 @@ function AppShell() {
       case 'profile':      return <Profile />
       case 'messages':     return <Messages />
       case 'admin':        return isAdmin ? <AdminDashboard /> : <Dashboard />
-      case 'notifications': case 'cv': case 'guidance': case 'settings':
-        return <ComingSoon name={PAGE_TITLES[activeNav]} />
-      default:            return <Dashboard />
+      case 'notifications': return <Notifications />
+      case 'cv':           return <CVBuilder />
+      case 'guidance':     return <CareerGuidance />
+      case 'settings':     return <Settings />
+      default:             return <Dashboard />
     }
   }
 
@@ -76,6 +75,7 @@ function AppShell() {
         <Topbar
           title={PAGE_TITLES[activeNav]}
           onMenuClick={() => setSidebarOpen(o => !o)}
+          onNotificationsClick={() => setActiveNav('notifications')}
         />
         {renderPage()}
       </div>
