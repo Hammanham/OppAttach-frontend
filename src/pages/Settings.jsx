@@ -49,6 +49,15 @@ export default function Settings() {
           <span className={styles.label}>Logged in as</span>
           <span className={styles.value}>{user?.email || user?.name || '—'}</span>
         </div>
+        <div className={styles.row}>
+          <span className={styles.label}>Email verified</span>
+          <span className={user?.emailVerified ? styles.badge : styles.value}>
+            {user?.emailVerified ? 'Yes ✓' : 'No'}
+          </span>
+        </div>
+        <p className={styles.hint}>
+          {user?.emailVerified ? 'Your email is verified (e.g. via Google sign-in).' : 'Sign in with Google to verify your email, or use the verification link if you signed up with email.'}
+        </p>
         <p className={styles.hint}>Update your name, email, and CV in <strong>My Profile</strong> from the sidebar.</p>
       </div>
     </div>
