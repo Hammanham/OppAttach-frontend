@@ -45,13 +45,13 @@ function AppShell() {
 
   const renderPage = () => {
     switch (activeNav) {
-      case 'dashboard':    return <Dashboard />
+      case 'dashboard':    return <Dashboard setActiveNav={setActiveNav} />
       case 'browse':       return <Browse />
       case 'applications': return <Applications />
       case 'saved':        return <Saved />
       case 'profile':      return <Profile />
       case 'messages':     return <Messages />
-      case 'admin':        return isAdmin ? <AdminDashboard /> : <Dashboard />
+      case 'admin':        return isAdmin ? <AdminDashboard /> : <Dashboard setActiveNav={setActiveNav} />
       case 'notifications': return <Notifications />
       case 'cv':           return <CVBuilder />
       case 'guidance':     return <CareerGuidance />

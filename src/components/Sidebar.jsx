@@ -61,7 +61,7 @@ export default function Sidebar({ activeNav, setActiveNav, isOpen, onClose, user
           <p className={styles.sectionLabel}>Manage</p>
           {[
             { id: 'profile',       label: 'My Profile',    badge: null },
-            { id: 'messages',      label: 'Messages',      badge: 2 },
+            { id: 'messages',      label: 'Messages',      badge: null },
             { id: 'notifications', label: 'Notifications', badge: null },
           ].map(item => (
             <NavItem key={item.id} item={item} active={activeNav === item.id} onClick={(id) => { setActiveNav(id); onClose(); }} />

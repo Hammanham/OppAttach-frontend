@@ -1,5 +1,18 @@
-import { MOCK_ACTIVITY } from '../data/mockData'
+import { useState, useEffect } from 'react'
+import { dashboardService } from '../services/api'
 import styles from './Notifications.module.css'
+
+function formatActivityTime(d) {
+  if (!d) return ''
+  const date = new Date(d)
+  const now = new Date()
+  const diffMs = now - date
+  const diffDays = Math.floor(diffMs / (24 * 60 * 60 * 1000))
+  if (diffDays === 0) return `Today, ${date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
+  if (diffDays === 1) return `Yesterday, ${date.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })}`
+  if (diffDays < 7) return `${diffDays} days ago`
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+}
 
 function ActivityItem({ item }) {
   return (
@@ -14,16 +27,41 @@ function ActivityItem({ item }) {
 }
 
 export default function Notifications() {
+  const [activity, setActivity] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    dashboardService.getActivity(50)
+      .then(res => res.data)
+      .then(data => {
+        setActivity(Array.isArray(data) ? data.map(a => {
+          const opp = a.opportunity || {}
+          const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
+          const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
+          return {
+            id: a._id || a.id,
+            type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue',
+            text,
+            time: formatActivityTime(a.createdAt),
+          }
+        }) : [])
+      })
+      .catch(() => setActivity([]))
+      .finally(() => setLoading(false))
+  }, [])
+
   return (
     <div className={styles.wrap}>
       <h2 className={styles.title}>Notifications</h2>
       <p className={styles.subtitle}>Application updates, deadline reminders, and recruiter activity.</p>
       <div className={styles.card}>
         <div className={styles.list}>
-          {MOCK_ACTIVITY.length > 0 ? (
-            MOCK_ACTIVITY.map(item => <ActivityItem key={item.id} item={item} />)
+          {loading ? (
+            <p className={styles.empty}>Loading…</p>
+          ) : activity.length > 0 ? (
+            activity.map(item => <ActivityItem key={item.id} item={item} />)
           ) : (
-            <p className={styles.empty}>No notifications yet.</p>
+            <p className={styles.empty}>No notifications yet. Your application updates will appear here.</p>
           )}
         </div>
       </div>
