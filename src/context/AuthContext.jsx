@@ -7,8 +7,14 @@ export function AuthProvider({ children }) {
   const [user, setUser]       = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // On mount — try to restore session from backend
+  // On mount — try to restore session from backend (skip request if no token to avoid 401 redirect loop)
   useEffect(() => {
+    const token = localStorage.getItem('ias_token')
+    if (!token) {
+      setUser(null)
+      setLoading(false)
+      return
+    }
     authService.me()
       .then(res => setUser(res.data))
       .catch(() => setUser(null))

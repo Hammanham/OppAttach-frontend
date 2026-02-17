@@ -40,9 +40,12 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      // Token expired / not authenticated → go to landing so user can sign in
+      const hadToken = !!localStorage.getItem('ias_token')
       localStorage.removeItem('ias_token')
-      window.location.href = '/'
+      // Only redirect if we had a token (session expired). Avoids reload loop when /auth/me returns 401 with no token.
+      if (hadToken) {
+        window.location.href = '/'
+      }
     }
     return Promise.reject(error)
   }
