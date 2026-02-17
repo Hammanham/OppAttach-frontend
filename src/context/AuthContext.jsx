@@ -29,6 +29,13 @@ export function AuthProvider({ children }) {
     return res.data
   }
 
+  const loginWithGoogle = async (idToken) => {
+    const res = await authService.loginGoogle(idToken)
+    if (res.data.token) localStorage.setItem('ias_token', res.data.token)
+    setUser(res.data.user)
+    return res.data
+  }
+
   const logout = async () => {
     await authService.logout().catch(() => {})
     localStorage.removeItem('ias_token')
@@ -36,7 +43,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout }}>
       {children}
     </AuthContext.Provider>
   )

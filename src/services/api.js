@@ -47,11 +47,12 @@ api.interceptors.response.use(
 // AUTH
 // ══════════════════════════════════════════════════════════════
 export const authService = {
-  register: (data)     => api.post('/auth/register', data),
-  login:    (credentials) => api.post('/auth/login', credentials),
-  logout:   ()            => api.post('/auth/logout'),
-  me:       ()            => api.get('/auth/me'),
-  refresh:  ()            => api.post('/auth/refresh'),
+  register:   (data)        => api.post('/auth/register', data),
+  login:      (credentials) => api.post('/auth/login', credentials),
+  loginGoogle: (idToken)    => api.post('/auth/google', { idToken }),
+  logout:     ()            => api.post('/auth/logout'),
+  me:         ()            => api.get('/auth/me'),
+  refresh:    ()            => api.post('/auth/refresh'),
 }
 
 // ══════════════════════════════════════════════════════════════

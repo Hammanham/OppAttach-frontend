@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
 import styles from './Login.module.css'
+
+const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
 export default function Login({ onBack, mode: initialMode = 'login' }) {
   const [mode, setMode] = useState(initialMode) // 'login' | 'register'
@@ -9,7 +11,47 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
   const [name, setName] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const { login, register } = useAuth()
+  const googleButtonRef = useRef(null)
+  const { login, register, loginWithGoogle } = useAuth()
+
+  useEffect(() => {
+    if (!GOOGLE_CLIENT_ID) return
+    let cancelled = false
+    const initGoogle = () => {
+      if (cancelled || !window.google?.accounts?.id) return false
+      try {
+        window.google.accounts.id.initialize({
+          client_id: GOOGLE_CLIENT_ID,
+          callback: (res) => {
+            setError('')
+            setLoading(true)
+            loginWithGoogle(res.credential)
+              .catch(err => setError(err.response?.data?.message || 'Google sign-in failed.'))
+              .finally(() => setLoading(false))
+          },
+        })
+        if (googleButtonRef.current && !googleButtonRef.current.querySelector('iframe')) {
+          window.google.accounts.id.renderButton(googleButtonRef.current, {
+            type: 'standard',
+            theme: 'outline',
+            size: 'large',
+            text: 'continue_with',
+            width: 280,
+          })
+        }
+        return true
+      } catch (e) {
+        return false
+      }
+    }
+    const tryInit = () => {
+      if (cancelled) return
+      if (initGoogle()) return
+      setTimeout(tryInit, 150)
+    }
+    tryInit()
+    return () => { cancelled = true }
+  }, [loginWithGoogle])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -87,6 +129,13 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
           <button type="submit" className={styles.submitBtn} disabled={loading}>
             {loading ? 'Please wait…' : mode === 'login' ? 'Sign in' : 'Create account'}
           </button>
+
+          {GOOGLE_CLIENT_ID && (
+            <>
+              <div className={styles.divider}>or</div>
+              <div ref={googleButtonRef} className={styles.googleBtnWrap} />
+            </>
+          )}
         </form>
 
         <p className={styles.toggle}>

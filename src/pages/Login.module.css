@@ -107,6 +107,27 @@
 .submitBtn:hover:not(:disabled) { opacity: 0.9; }
 .submitBtn:disabled { opacity: 0.7; cursor: not-allowed; }
 
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 8px 0 4px;
+  font-size: 13px;
+  color: var(--text3);
+}
+.divider::before,
+.divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+.googleBtnWrap {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
 .toggle {
   margin-top: 24px;
   text-align: center;
