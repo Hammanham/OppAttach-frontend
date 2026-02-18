@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Sidebar   from './components/Sidebar'
@@ -34,7 +34,26 @@ const PAGE_TITLES = {
 function AppShell() {
   const [activeNav, setActiveNav]     = useState('dashboard')
   const [sidebarOpen, setSidebarOpen] = useState(false)
-  const { user: authUser, logout } = useAuth()
+  const [verifiedMessage, setVerifiedMessage] = useState(null)
+  const { user: authUser, logout, refreshUser } = useAuth()
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const verified = params.get('verified')
+    if (verified === '1') {
+      refreshUser?.()
+      window.history.replaceState({}, '', window.location.pathname)
+      setVerifiedMessage('Email verified successfully.')
+      const t = setTimeout(() => setVerifiedMessage(null), 5000)
+      return () => clearTimeout(t)
+    }
+    if (verified === 'error') {
+      window.history.replaceState({}, '', window.location.pathname)
+      setVerifiedMessage('Verification link invalid or expired.')
+      const t = setTimeout(() => setVerifiedMessage(null), 6000)
+      return () => clearTimeout(t)
+    }
+  }, [refreshUser])
 
   const user = authUser ? {
     name: authUser.name || 'User',
@@ -62,6 +81,16 @@ function AppShell() {
 
   return (
     <div className="shell">
+      {verifiedMessage && (
+        <div style={{ background: verifiedMessage.includes('success') ? 'var(--green-bg)' : 'var(--amber-bg)', color: verifiedMessage.includes('success') ? 'var(--green)' : 'var(--amber)', padding: '10px 24px', textAlign: 'center', fontSize: '14px', fontWeight: 500 }}>
+          {verifiedMessage}
+        </div>
+      )}
+      {authUser && !authUser.emailVerified && !verifiedMessage && (
+        <div style={{ background: 'var(--blue-bg)', color: 'var(--blue)', padding: '10px 24px', textAlign: 'center', fontSize: '14px' }}>
+          Please check your email to verify your account. Click the link we sent you.
+        </div>
+      )}
       <Sidebar
         activeNav={activeNav}
         setActiveNav={setActiveNav}

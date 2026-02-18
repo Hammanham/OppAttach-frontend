@@ -67,6 +67,14 @@
   font-size: 14px;
 }
 
+.success {
+  padding: 10px 12px;
+  background: var(--green-bg);
+  color: var(--green);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
 .label {
   display: flex;
   flex-direction: column;

@@ -12,6 +12,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
   const [role, setRole] = useState('student') // 'student' | 'graduate'
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
+  const [verificationMessage, setVerificationMessage] = useState('')
   const googleButtonRef = useRef(null)
   const modeRoleRef = useRef({ mode: initialMode, role: 'student' })
   const { login, register, loginWithGoogle } = useAuth()
@@ -69,7 +70,12 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
       if (mode === 'login') {
         await login({ email, password })
       } else {
-        await register({ name, email, password, role })
+        const data = await register({ name, email, password, role })
+        if (data?.verificationEmailSent && data?.message) {
+          setVerificationMessage(data.message)
+        } else if (data?.message) {
+          setVerificationMessage(data.message)
+        }
       }
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || err.message || 'Something went wrong'
@@ -99,6 +105,11 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
 
         <form onSubmit={handleSubmit} className={styles.form}>
           {error && <div className={styles.error}>{error}</div>}
+          {verificationMessage && (
+            <div className={styles.success} role="alert">
+              {verificationMessage}
+            </div>
+          )}
           {mode === 'register' && (
             <label className={styles.label}>
               Name
@@ -167,7 +178,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
         <p className={styles.toggle}>
           {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
           {' '}
-          <button type="button" className={styles.toggleLink} onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); }}>
+          <button type="button" className={styles.toggleLink} onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); setVerificationMessage(''); }}>
             {mode === 'login' ? 'Sign up' : 'Log in'}
           </button>
         </p>

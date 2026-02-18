@@ -21,6 +21,17 @@ export function AuthProvider({ children }) {
       .finally(() => setLoading(false))
   }, [])
 
+  const refreshUser = async () => {
+    const token = localStorage.getItem('ias_token')
+    if (!token) return
+    try {
+      const res = await authService.me()
+      setUser(res.data)
+    } catch {
+      setUser(null)
+    }
+  }
+
   const login = async (credentials) => {
     const res = await authService.login(credentials)
     if (res.data.token) localStorage.setItem('ias_token', res.data.token)
@@ -49,7 +60,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout }}>
+    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )
