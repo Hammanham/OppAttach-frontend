@@ -3,6 +3,7 @@ import { opportunityService } from '../services/api'
 import { useAuth } from '../context/AuthContext'
 import { IconBookmark } from '../components/Icons'
 import ApplyForm from '../components/ApplyForm'
+import OpportunityDetailModal from '../components/OpportunityDetailModal'
 import styles from './Browse.module.css'
 
 export default function Browse() {
@@ -13,7 +14,10 @@ export default function Browse() {
   const [search, setSearch] = useState('')
   const [savedIds, setSavedIds] = useState(new Set())
   const [applyOpportunity, setApplyOpportunity] = useState(null)
+  const [detailOpportunity, setDetailOpportunity] = useState(null)
   const { user } = useAuth()
+
+  const typeLabel = (t) => (t === 'attachment' ? 'Industrial Attachment' : t === 'internship' ? 'Internship' : t || '')
 
   useEffect(() => {
     let cancelled = false
@@ -66,6 +70,13 @@ export default function Browse() {
           onCancel={() => setApplyOpportunity(null)}
         />
       )}
+      {detailOpportunity && (
+        <OpportunityDetailModal
+          opportunity={detailOpportunity}
+          onClose={() => setDetailOpportunity(null)}
+          onApply={user ? (opp) => { setDetailOpportunity(null); setApplyOpportunity(opp); } : undefined}
+        />
+      )}
       <div className={styles.header}>
         <h2 className={styles.title}>Browse Opportunities</h2>
         <input
@@ -92,9 +103,12 @@ export default function Browse() {
                   <h3 className={styles.cardTitle}>{opp.title}</h3>
                   <p className={styles.cardCompany}>{opp.company}</p>
                   <div className={styles.tags}>
-                    <span className={styles.tag}>{opp.type}</span>
+                    <span className={styles.tag}>{opp.type === 'attachment' ? 'Industrial Attachment' : opp.type === 'internship' ? 'Internship' : opp.type}</span>
                     {opp.location && <span className={styles.tag}>{opp.location}</span>}
                   </div>
+                  <button type="button" className={styles.seeMoreBtn} onClick={() => setDetailOpportunity(opp)}>
+                    See more details
+                  </button>
                 </div>
                 <div className={styles.cardActions}>
                   {user && (

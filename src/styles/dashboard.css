@@ -346,6 +346,19 @@
 
 .opp-tags { display: flex; gap: 6px; flex-wrap: wrap; }
 
+.opp-see-more {
+  margin-top: 8px;
+  padding: 6px 12px;
+  font-size: 12px;
+  color: var(--accent);
+  background: none;
+  border: 1px solid var(--accent);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-family: inherit;
+}
+.opp-see-more:hover { background: var(--accent-bg); }
+
 .tag {
   font-size: 11px;
   font-weight: 500;

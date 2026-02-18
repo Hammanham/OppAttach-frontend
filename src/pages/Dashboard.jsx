@@ -4,6 +4,7 @@ import { IconFile, IconCheck, IconEye, IconHeart, IconBookmark, IconPlus, IconCh
 import { dashboardService, applicationService, opportunityService } from '../services/api'
 import { FILTER_TABS } from '../data/mockData'
 import ApplyForm from '../components/ApplyForm'
+import OpportunityDetailModal from '../components/OpportunityDetailModal'
 
 /* ─── Helpers ─────────────────────────────────────────────────── */
 const BACKEND_STATUS_TO_UI = {
@@ -81,7 +82,7 @@ function StatCard({ stat, delay }) {
 }
 
 /* ─── OpportunityItem ─────────────────────────────────────────── */
-function OpportunityItem({ opp, onApply }) {
+function OpportunityItem({ opp, onApply, onShowDetails }) {
   return (
     <div className="opp-item">
       <div className="company-logo" style={{ background: opp.logoBg, color: opp.logoColor, borderColor: opp.logoBg }}>
@@ -94,6 +95,11 @@ function OpportunityItem({ opp, onApply }) {
           <span className="tag tag-type">{opp.typeDisplay || opp.type}</span>
           {opp.category && <span className="tag tag-field">{opp.category}</span>}
         </div>
+        {onShowDetails && (
+          <button type="button" className="opp-see-more" onClick={() => onShowDetails(opp)}>
+            See more details
+          </button>
+        )}
       </div>
       <div className="opp-meta">
         <div className="opp-date">Closes {opp.closingDate}</div>
@@ -156,6 +162,7 @@ export default function Dashboard({ setActiveNav }) {
   const [saved, setSaved] = useState([])
   const [loading, setLoading] = useState(true)
   const [applyOpportunity, setApplyOpportunity] = useState(null)
+  const [detailOpportunity, setDetailOpportunity] = useState(null)
 
   useEffect(() => {
     let cancelled = false
@@ -206,6 +213,10 @@ export default function Dashboard({ setActiveNav }) {
           typeDisplay,
           category: o.category,
           closingDate: o.deadline ? formatDate(o.deadline) : '—',
+          deadline: o.deadline,
+          description: o.description,
+          requirements: o.requirements,
+          duration: o.duration,
           logoInitials: getInitials(o.company),
           logoBg: colors.bg,
           logoColor: colors.color,
@@ -232,6 +243,13 @@ export default function Dashboard({ setActiveNav }) {
 
   return (
     <div className="content">
+      {detailOpportunity && (
+        <OpportunityDetailModal
+          opportunity={detailOpportunity}
+          onClose={() => setDetailOpportunity(null)}
+          onApply={(opp) => { setDetailOpportunity(null); setApplyOpportunity(opp); }}
+        />
+      )}
       {applyOpportunity && (
         <ApplyForm
           opportunity={applyOpportunity}
@@ -327,7 +345,7 @@ export default function Dashboard({ setActiveNav }) {
               {loading ? (
                 <p style={{ color: 'var(--text3)', fontSize: '13px', padding: '12px 0' }}>Loading…</p>
               ) : filteredOpps.length > 0 ? (
-                filteredOpps.map(opp => <OpportunityItem key={opp.id} opp={opp} onApply={setApplyOpportunity} />)
+                filteredOpps.map(opp => <OpportunityItem key={opp.id} opp={opp} onApply={setApplyOpportunity} onShowDetails={setDetailOpportunity} />)
               ) : (
                 <p style={{ color: 'var(--text3)', fontSize: '13px', padding: '12px 0' }}>No opportunities in this category yet. Browse all roles to find a fit.</p>
               )}
