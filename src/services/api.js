@@ -26,11 +26,14 @@ const api = axios.create({
   withCredentials: true,
 })
 
-// ─── Request interceptor — attach auth token ───────────────────
+// ─── Request interceptor — attach auth token; allow FormData to set Content-Type ───────────────────
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('ias_token')
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
+  }
+  if (config.data instanceof FormData) {
+    delete config.headers['Content-Type']
   }
   return config
 })
@@ -94,14 +97,19 @@ export const applicationService = {
   getById:     (id)     => api.get(`/applications/${id}`),
   create:      (payload) => {
     if (payload instanceof FormData) {
-      return api.post('/applications', payload);
+      return api.post('/applications', payload, { headers: { 'Content-Type': undefined } });
     }
     const form = new FormData();
     if (payload.opportunityId != null) form.append('opportunityId', payload.opportunityId);
     if (payload.coverLetter != null) form.append('coverLetter', payload.coverLetter);
-    if (payload.resume instanceof File) form.append('resume', payload.resume);
-    if (payload.recommendationLetter instanceof File) form.append('recommendationLetter', payload.recommendationLetter);
-    return api.post('/applications', form);
+    const resumeFile = payload.resume;
+    if (resumeFile && (resumeFile instanceof File || resumeFile instanceof Blob)) {
+      form.append('resume', resumeFile, resumeFile instanceof File ? resumeFile.name : 'resume');
+    }
+    if (payload.recommendationLetter && (payload.recommendationLetter instanceof File || payload.recommendationLetter instanceof Blob)) {
+      form.append('recommendationLetter', payload.recommendationLetter, payload.recommendationLetter instanceof File ? payload.recommendationLetter.name : 'recommendation');
+    }
+    return api.post('/applications', form, { headers: { 'Content-Type': undefined } });
   },
   pay:         (id) => api.post(`/applications/${id}/pay`),
   update:      (id, d)  => api.patch(`/applications/${id}`, d),
