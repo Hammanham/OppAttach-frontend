@@ -199,7 +199,7 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
             Browse Opportunities
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
           </button>
-          <button className={styles.btnHeroGhost} onClick={enter}>
+          <button className={styles.btnHeroGhost} onClick={() => document.getElementById('for-companies')?.scrollIntoView({ behavior: 'smooth' })}>
             For Companies
           </button>
         </div>
@@ -286,6 +286,60 @@ function Features() {
               <p className={styles.featureDesc}>{f.desc}</p>
             </div>
           ))}
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── For Companies ──────────────────────────────────────────── */
+function ForCompanies({ onEnterApp, onSignIn, onGetStarted }) {
+  const [ref, inView] = useInView()
+  const enter = onSignIn || onGetStarted || onEnterApp
+  return (
+    <section id="for-companies" className={`${styles.section} ${styles.sectionAlt}`} ref={ref}>
+      <div className={styles.sectionInner}>
+        <div className={`${styles.sectionHeader} ${inView ? styles.fadeUp : ''}`}>
+          <div className={styles.eyebrow}>Employers &amp; recruiters</div>
+          <h2 className={styles.sectionHeading}>Hire the best<br />student talent</h2>
+          <p className={styles.sectionSub}>Post internships and industrial attachment roles, reach verified students and graduates, and manage applications — all in one place.</p>
+        </div>
+        <div className={styles.featureGrid}>
+          {[
+            { icon: '📋', title: 'Post Roles in Minutes', desc: 'Create listings with your requirements, deadlines and application details. Publish and start receiving applications.' },
+            { icon: '✅', title: 'Verified Applicants', desc: 'Access students and graduates who have completed their profiles. Filter by department, skills and institution.' },
+            { icon: '📊', title: 'Manage Applications', desc: 'Review, shortlist and communicate with candidates. Track hiring pipeline from application to placement.' },
+          ].map((f, i) => (
+            <div key={f.title} className={`${styles.featureCard} ${inView ? styles.fadeUp : ''}`} style={{ animationDelay: `${0.05 + i * 0.07}s` }}>
+              <div className={styles.featureEmoji}>{f.icon}</div>
+              <h3 className={styles.featureTitle}>{f.title}</h3>
+              <p className={styles.featureDesc}>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+        <div className={`${styles.sectionHeader} ${inView ? styles.fadeUp : ''}`} style={{ marginTop: '2rem' }}>
+          <button className={styles.btnHeroPrimary} onClick={enter}>Get started as a company</button>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+/* ─── About ─────────────────────────────────────────────────── */
+function About() {
+  const [ref, inView] = useInView()
+  return (
+    <section id="about" className={styles.section} ref={ref}>
+      <div className={styles.sectionInner}>
+        <div className={`${styles.sectionHeader} ${inView ? styles.fadeUp : ''}`}>
+          <div className={styles.eyebrow}>Who we are</div>
+          <h2 className={styles.sectionHeading}>About IAS</h2>
+          <p className={styles.sectionSub}>
+            IAS (Industrial Attachment &amp; Internship Platform) connects Kenyan students and graduates with quality internship and industrial attachment opportunities. We work with leading employers across sectors to make placement simple, transparent and fair — so every student can find the right role and every company can find the right talent.
+          </p>
+          <p className={styles.sectionSub} style={{ marginTop: '1rem' }}>
+            Our mission is to bridge the gap between education and industry, helping students gain real-world experience and companies build a pipeline of skilled talent.
+          </p>
         </div>
       </div>
     </section>
@@ -426,6 +480,8 @@ export default function Landing({ onEnterApp, onSignIn, onGetStarted }) {
       <StatsBand />
       <Features />
       <HowItWorks />
+      <ForCompanies onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
+      <About />
       <Testimonials />
       <CTABanner onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
       <Footer />
