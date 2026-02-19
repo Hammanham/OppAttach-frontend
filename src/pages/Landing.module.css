@@ -391,6 +391,8 @@
   box-shadow: 0 8px 24px rgba(199,91,43,.38);
 }
 
+a.btnHeroPrimary { text-decoration: none; color: #fff; }
+
 .btnHeroGhost {
   display: inline-flex;
   align-items: center;
@@ -970,12 +972,11 @@
   padding-top: 24px;
   border-top: 1px solid var(--border);
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
+  text-align: center;
   font-size: 13px;
   color: var(--text3);
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 /* ─── Responsive ─────────────────────────────────────────────── */

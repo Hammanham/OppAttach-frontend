@@ -293,9 +293,8 @@ function Features() {
 }
 
 /* ─── For Companies ──────────────────────────────────────────── */
-function ForCompanies({ onEnterApp, onSignIn, onGetStarted }) {
+function ForCompanies() {
   const [ref, inView] = useInView()
-  const enter = onSignIn || onGetStarted || onEnterApp
   return (
     <section id="for-companies" className={`${styles.section} ${styles.sectionAlt}`} ref={ref}>
       <div className={styles.sectionInner}>
@@ -318,7 +317,7 @@ function ForCompanies({ onEnterApp, onSignIn, onGetStarted }) {
           ))}
         </div>
         <div className={`${styles.sectionHeader} ${inView ? styles.fadeUp : ''}`} style={{ marginTop: '2rem' }}>
-          <button className={styles.btnHeroPrimary} onClick={enter}>Get started as a company</button>
+          <a href="mailto:opportunity.app@gmail.com?subject=Company%20enquiry%20-%20Get%20started%20with%20IAS" className={styles.btnHeroPrimary}>Get started as a company</a>
         </div>
       </div>
     </section>
@@ -464,8 +463,7 @@ function Footer() {
       </div>
 
       <div className={styles.footerBottom}>
-        <span>© {new Date().getFullYear()} IAS Platform. All rights reserved.</span>
-        <span>Made with care for Kenyan students 🇰🇪</span>
+        <span>© {new Date().getFullYear()} IAS Platform. All Rights Reserved.</span>
       </div>
     </footer>
   )
@@ -480,7 +478,7 @@ export default function Landing({ onEnterApp, onSignIn, onGetStarted }) {
       <StatsBand />
       <Features />
       <HowItWorks />
-      <ForCompanies onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
+      <ForCompanies />
       <About />
       <Testimonials />
       <CTABanner onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
