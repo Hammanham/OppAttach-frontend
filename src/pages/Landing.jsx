@@ -248,6 +248,23 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
   )
 }
 
+/* ─── Promise / Value note ───────────────────────────────────── */
+function PromiseBand() {
+  const [ref, inView] = useInView()
+  return (
+    <section ref={ref} className={styles.promiseBand}>
+      <div className={`${styles.promiseInner} ${inView ? styles.fadeUp : ''}`}>
+        <p className={styles.promiseHeadline}>
+          We find the opportunities. You land the one that fits.
+        </p>
+        <p className={styles.promiseSub}>
+          We partner with employers across Kenya so internships and industrial attachments are in one place. Browse open roles, apply in minutes, and get one step closer to the company you want.
+        </p>
+      </div>
+    </section>
+  )
+}
+
 /* ─── Stats Band ─────────────────────────────────────────────── */
 function StatsBand() {
   const [ref, inView] = useInView()
@@ -475,6 +492,7 @@ export default function Landing({ onEnterApp, onSignIn, onGetStarted }) {
     <div className={styles.landing}>
       <Navbar onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
       <Hero onEnterApp={onEnterApp} onSignIn={onSignIn} onGetStarted={onGetStarted} />
+      <PromiseBand />
       <StatsBand />
       <Features />
       <HowItWorks />
