@@ -14,8 +14,6 @@ const STATUS_LABELS = {
 export default function Applications() {
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
-  const [payForId, setPayForId] = useState(null)
-  const [payPhone, setPayPhone] = useState('')
   const [payError, setPayError] = useState('')
   const [paying, setPaying] = useState(false)
 
@@ -32,13 +30,18 @@ export default function Applications() {
       .finally(() => setLoading(false))
   }, [])
 
-  const handlePay = async (e) => {
-    e.preventDefault()
-    if (!payForId || !payPhone.trim()) return
+  const handlePayFor = (id) => {
     setPayError('')
     setPaying(true)
-    applicationService.pay(payForId, { phoneNumber: payPhone.trim() })
-      .then(() => { setPayForId(null); setPayPhone(''); refresh() })
+    applicationService.pay(id)
+      .then(res => {
+        const link = res.data?.paymentLink
+        if (link) {
+          window.location.href = link
+          return
+        }
+        refresh()
+      })
       .catch(err => setPayError(err.response?.data?.message || 'Payment request failed.'))
       .finally(() => setPaying(false))
   }
@@ -80,7 +83,7 @@ export default function Applications() {
                 <td><span className={styles.status}>{STATUS_LABELS[app.status] || app.status}</span></td>
                 <td>
                   {app.status === 'pending_payment' && (
-                    <button type="button" className={styles.payBtn} onClick={() => setPayForId(app._id)}>Pay now</button>
+                    <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>
                   )}
                 </td>
               </tr>
@@ -88,28 +91,7 @@ export default function Applications() {
           </tbody>
         </table>
       </div>
-      {payForId && (
-        <div className={styles.payOverlay} onClick={() => setPayForId(null)}>
-          <div className={styles.payCard} onClick={e => e.stopPropagation()}>
-            <h3 className={styles.payTitle}>Complete payment (M-Pesa)</h3>
-            {payError && <p className={styles.payError}>{payError}</p>}
-            <form onSubmit={handlePay}>
-              <input
-                type="tel"
-                placeholder="Phone number (e.g. 254712345678)"
-                value={payPhone}
-                onChange={e => setPayPhone(e.target.value)}
-                className={styles.payInput}
-                required
-              />
-              <div className={styles.payActions}>
-                <button type="button" className={styles.btnSecondary} onClick={() => setPayForId(null)}>Cancel</button>
-                <button type="submit" className={styles.btnPrimary} disabled={paying}>{paying ? 'Sending…' : 'Pay now'}</button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      {payError && <p className={styles.payError}>{payError}</p>}
     </div>
   )
 }

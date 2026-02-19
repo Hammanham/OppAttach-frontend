@@ -99,12 +99,11 @@ export const applicationService = {
     const form = new FormData();
     if (payload.opportunityId != null) form.append('opportunityId', payload.opportunityId);
     if (payload.coverLetter != null) form.append('coverLetter', payload.coverLetter);
-    if (payload.phoneNumber != null) form.append('phoneNumber', payload.phoneNumber);
     if (payload.resume instanceof File) form.append('resume', payload.resume);
     if (payload.recommendationLetter instanceof File) form.append('recommendationLetter', payload.recommendationLetter);
     return api.post('/applications', form);
   },
-  pay:         (id, data) => api.post(`/applications/${id}/pay`, data),
+  pay:         (id) => api.post(`/applications/${id}/pay`),
   update:      (id, d)  => api.patch(`/applications/${id}`, d),
   withdraw:    (id)     => api.delete(`/applications/${id}`),
   getAllAdmin: (params) => api.get('/applications/admin/all', { params }),
