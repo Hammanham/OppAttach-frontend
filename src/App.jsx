@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Sidebar   from './components/Sidebar'
@@ -31,8 +32,20 @@ const PAGE_TITLES = {
   admin:        'Admin Dashboard',
 }
 
+const APP_PAGES = ['dashboard', 'browse', 'applications', 'saved', 'profile', 'messages', 'notifications', 'cv', 'guidance', 'settings', 'admin']
+
+function activeNavFromPath(pathname) {
+  const base = '/app'
+  if (!pathname.startsWith(base)) return 'dashboard'
+  const rest = pathname.slice(base.length).replace(/^\/+/, '') || 'dashboard'
+  return APP_PAGES.includes(rest) ? rest : 'dashboard'
+}
+
 function AppShell() {
-  const [activeNav, setActiveNav]     = useState('dashboard')
+  const { pathname } = useLocation()
+  const navigate = useNavigate()
+  const activeNav = activeNavFromPath(pathname)
+  const setActiveNav = (id) => navigate(`/app/${id}`)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [verifiedMessage, setVerifiedMessage] = useState(null)
   const { user: authUser, logout, refreshUser } = useAuth()
@@ -75,7 +88,7 @@ function AppShell() {
       case 'cv':           return <CVBuilder />
       case 'guidance':     return <CareerGuidance />
       case 'settings':     return <Settings />
-      default:             return <Dashboard />
+      default:             return <Dashboard setActiveNav={setActiveNav} />
     }
   }
 
@@ -112,10 +125,9 @@ function AppShell() {
   )
 }
 
-function Root() {
+function LandingRoute() {
   const { user, loading } = useAuth()
-  const [authView, setAuthView] = useState(null) // null | 'login' | 'register'
-
+  const navigate = useNavigate()
   if (loading) {
     return (
       <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text2)' }}>
@@ -123,31 +135,62 @@ function Root() {
       </div>
     )
   }
-
-  if (user) return <AppShell />
-
-  if (authView === 'login' || authView === 'register') {
-    return (
-      <Login
-        mode={authView}
-        onBack={() => setAuthView(null)}
-      />
-    )
-  }
-
+  if (user) return <Navigate to="/app" replace />
   return (
     <Landing
-      onSignIn={() => setAuthView('login')}
-      onGetStarted={() => setAuthView('register')}
+      onSignIn={() => navigate('/login')}
+      onGetStarted={() => navigate('/signup')}
     />
   )
+}
+
+function LoginRoute({ mode }) {
+  const { user, loading } = useAuth()
+  const navigate = useNavigate()
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text2)' }}>
+        Loading…
+      </div>
+    )
+  }
+  if (user) return <Navigate to="/app" /> 
+  return (
+    <Login
+      mode={mode}
+      onBack={() => navigate('/')}
+    />
+  )
+}
+
+function AppRoute() {
+  const { user, loading } = useAuth()
+  const location = useLocation()
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text2)' }}>
+        Loading…
+      </div>
+    )
+  }
+  if (!user) return <Navigate to="/" replace state={{ from: location }} />
+  return <AppShell />
 }
 
 export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
-        <Root />
+        <BrowserRouter>
+          <Routes>
+            <Route path="/" element={<LandingRoute />} />
+            <Route path="/login" element={<LoginRoute mode="login" />} />
+            <Route path="/signup" element={<LoginRoute mode="register" />} />
+            <Route path="/app" element={<Navigate to="/app/dashboard" replace />} />
+            <Route path="/app/:page" element={<AppRoute />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
       </AuthProvider>
     </ThemeProvider>
   )
