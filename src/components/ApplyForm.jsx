@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { applicationService } from '../services/api'
 import styles from './ApplyForm.module.css'
 
@@ -10,7 +10,10 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
   const [recommendationLetter, setRecommendationLetter] = useState(null)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
-  const [redirecting, setRedirecting] = useState(false)
+  const [payChoice, setPayChoice] = useState(null)
+  const [mpesaPhone, setMpesaPhone] = useState('')
+  const [mpesaSent, setMpesaSent] = useState(false)
+  const pollRef = useRef(null)
 
   const isAttachment = opportunity?.type === 'attachment'
   const fee = opportunity?.applicationFee ?? FEE_DEFAULT
@@ -34,12 +37,10 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
       const res = await applicationService.create(payload)
       const data = res.data
 
-      if (data.paymentLink) {
-        setRedirecting(true)
-        // Open in new tab so closing it returns user to app (avoids getting stuck on Paystack)
-        window.open(data.paymentLink, '_blank', 'noopener,noreferrer')
-        setRedirecting(false)
-        onSuccess?.()
+      if (data.paymentLink && data.application) {
+        setPayChoice({ application: data.application, paymentLink: data.paymentLink })
+        setMpesaPhone('')
+        setMpesaSent(false)
         return
       }
       onSuccess?.()
@@ -48,6 +49,42 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handlePayWithCard = () => {
+    if (payChoice?.paymentLink) {
+      window.open(payChoice.paymentLink, '_blank', 'noopener,noreferrer')
+      setPayChoice(null)
+      onSuccess?.()
+    }
+  }
+
+  const handlePayWithMpesa = () => {
+    if (!mpesaPhone.trim() || !payChoice?.application?._id) return
+    setError('')
+    setLoading(true)
+    applicationService.chargeMpesa(payChoice.application._id, mpesaPhone.trim())
+      .then(() => {
+        setMpesaSent(true)
+        if (pollRef.current) clearInterval(pollRef.current)
+        pollRef.current = setInterval(() => {
+          applicationService.getAll()
+            .then(res => {
+              const apps = Array.isArray(res.data) ? res.data : []
+              const ok = apps.find(a => a._id === payChoice.application._id && a.status === 'submitted')
+              if (ok) {
+                if (pollRef.current) clearInterval(pollRef.current)
+                pollRef.current = null
+                setPayChoice(null)
+                setMpesaSent(false)
+                onSuccess?.()
+              }
+            })
+        }, 3000)
+        setTimeout(() => { if (pollRef.current) clearInterval(pollRef.current); pollRef.current = null }, 120000)
+      })
+      .catch(err => setError(err.response?.data?.message || 'M-Pesa request failed'))
+      .finally(() => setLoading(false))
   }
 
   return (
@@ -60,9 +97,8 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
           <button type="button" className={styles.closeBtn} onClick={onCancel} aria-label="Close">×</button>
         </div>
 
-        <form onSubmit={handleSubmit} className={styles.form}>
+        <form onSubmit={handleSubmit} className={styles.form} style={{ display: payChoice ? 'none' : undefined }}>
             {error && <div className={styles.error}>{error}</div>}
-            {redirecting && <p className={styles.hint}>Redirecting to payment… Complete payment to finish your application.</p>}
             <label className={styles.label}>
               Cover letter <span className={styles.required}>*</span>
               <textarea
@@ -98,14 +134,49 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
                 {recommendationLetter && <span className={styles.fileName}>{recommendationLetter.name}</span>}
               </label>
             )}
-            <p className={styles.hint}>You will be redirected to pay securely (card or mobile money) after submitting.</p>
+            <p className={styles.hint}>You will pay securely (M-Pesa or card) after submitting.</p>
             <div className={styles.actions}>
               <button type="button" className={styles.btnSecondary} onClick={onCancel}>Cancel</button>
-              <button type="submit" className={styles.btnPrimary} disabled={loading || redirecting || !canSubmit}>
-                {loading ? 'Submitting…' : redirecting ? 'Redirecting…' : `Submit & Pay KES ${fee}`}
+              <button type="submit" className={styles.btnPrimary} disabled={loading || !canSubmit}>
+                {loading ? 'Submitting…' : `Submit & Pay KES ${fee}`}
               </button>
             </div>
           </form>
+
+        {payChoice && (
+          <div className={styles.payChoice}>
+            <h3 className={styles.payChoiceTitle}>Pay application fee</h3>
+            {mpesaSent ? (
+              <div>
+                <p className={styles.hint}>Check your phone — complete the payment on your M-Pesa prompt.</p>
+                <button type="button" className={styles.btnSecondary} onClick={() => { setPayChoice(null); setMpesaSent(false); onSuccess?.() }}>Close</button>
+              </div>
+            ) : (
+              <>
+                <div className={styles.payMethod}>
+                  <label className={styles.payLabel}>Pay with M-Pesa</label>
+                  <p className={styles.payHint}>Enter 07XX or 2547XX — we add 254 automatically</p>
+                  <input
+                    type="tel"
+                    className={styles.payInput}
+                    placeholder="0712345678 or 254712345678"
+                    value={mpesaPhone}
+                    onChange={e => setMpesaPhone(e.target.value)}
+                    disabled={loading}
+                  />
+                  <button type="button" className={styles.btnPrimary} disabled={loading || !mpesaPhone.trim()} onClick={handlePayWithMpesa}>
+                    {loading ? 'Sending…' : 'Send M-Pesa prompt'}
+                  </button>
+                </div>
+                <p className={styles.payDivider}>or</p>
+                <button type="button" className={styles.btnSecondary} disabled={loading} onClick={handlePayWithCard}>
+                  Pay with Card / Bank
+                </button>
+                {error && <div className={styles.error}>{error}</div>}
+              </>
+            )}
+          </div>
+        )}
       </div>
     </div>
   )

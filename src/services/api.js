@@ -112,6 +112,7 @@ export const applicationService = {
     return api.post('/applications', form, { headers: { 'Content-Type': undefined } });
   },
   pay:         (id) => api.post(`/applications/${id}/pay`),
+  chargeMpesa: (id, phone) => api.post(`/applications/${id}/charge-mpesa`, { phone }),
   update:      (id, d)  => api.patch(`/applications/${id}`, d),
   withdraw:    (id)     => api.delete(`/applications/${id}`),
   getAllAdmin: (params) => api.get('/applications/admin/all', { params }),
