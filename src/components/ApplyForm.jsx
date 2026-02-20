@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { applicationService } from '../services/api'
 import styles from './ApplyForm.module.css'
 
-const FEE_DEFAULT = 500
+const FEE_DEFAULT = 5
 
 export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
   const [coverLetter, setCoverLetter] = useState('')

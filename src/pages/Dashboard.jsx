@@ -220,7 +220,7 @@ export default function Dashboard({ setActiveNav }) {
           logoInitials: getInitials(o.company),
           logoBg: colors.bg,
           logoColor: colors.color,
-          applicationFee: o.applicationFee ?? 350,
+          applicationFee: o.applicationFee ?? 5,
         }
       }) : [])
       setSaved(Array.isArray(savedData) ? savedData : [])
