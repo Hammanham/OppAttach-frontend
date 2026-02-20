@@ -115,6 +115,7 @@ export const applicationService = {
   update:      (id, d)  => api.patch(`/applications/${id}`, d),
   withdraw:    (id)     => api.delete(`/applications/${id}`),
   getAllAdmin: (params) => api.get('/applications/admin/all', { params }),
+  updateStatusAdmin: (id, status) => api.patch(`/applications/admin/${id}/status`, { status }),
 }
 
 // ══════════════════════════════════════════════════════════════

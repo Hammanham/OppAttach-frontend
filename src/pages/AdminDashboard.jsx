@@ -65,7 +65,23 @@ export default function AdminDashboard() {
     setShowForm(true)
   }
 
-  const statusLabel = (s) => ({ pending_payment: 'Pending payment', submitted: 'Submitted', under_review: 'In review', shortlisted: 'Shortlisted', rejected: 'Rejected', accepted: 'Accepted' }[s] || s)
+  const statusLabel = (s) => ({ pending_payment: 'Pending payment', submitted: 'Received', under_review: 'Being processed', shortlisted: 'Shortlisted', rejected: 'Rejected', accepted: 'Accepted' }[s] || s)
+
+  const STATUS_OPTIONS = [
+    { value: 'submitted', label: 'Received' },
+    { value: 'under_review', label: 'Being processed' },
+    { value: 'shortlisted', label: 'Shortlisted' },
+    { value: 'rejected', label: 'Rejected' },
+    { value: 'accepted', label: 'Accepted' },
+  ]
+
+  const handleStatusChange = (appId, newStatus) => {
+    applicationService.updateStatusAdmin(appId, newStatus)
+      .then(res => {
+        setApplications(prev => prev.map(a => a._id === appId ? { ...a, status: res.data.status } : a))
+      })
+      .catch(() => {})
+  }
 
   if (loading && !stats) {
     return <div className={styles.content}><p className={styles.msg}>Loading…</p></div>
@@ -167,15 +183,40 @@ export default function AdminDashboard() {
               <tr>
                 <th>Applicant</th>
                 <th>Opportunity</th>
+                <th>Documents</th>
                 <th>Status</th>
               </tr>
             </thead>
             <tbody>
               {applications.map(app => (
                 <tr key={app._id}>
-                  <td>{app.userId?.name ?? app.userId?.email ?? '—'}</td>
+                  <td>
+                    <div>{app.userId?.name ?? app.userId?.email ?? '—'}</div>
+                    {app.userId?.email && <div className={styles.email}>{app.userId.email}</div>}
+                  </td>
                   <td>{app.opportunityId?.title ?? '—'} ({app.opportunityId?.company})</td>
-                  <td><span className={styles.statusPill}>{statusLabel(app.status)}</span></td>
+                  <td>
+                    <div className={styles.docLinks}>
+                      {app.resumeUrl && <a href={app.resumeUrl} target="_blank" rel="noopener noreferrer" className={styles.docLink}>Resume</a>}
+                      {app.recommendationLetterUrl && <a href={app.recommendationLetterUrl} target="_blank" rel="noopener noreferrer" className={styles.docLink}>Letter</a>}
+                      {!app.resumeUrl && !app.recommendationLetterUrl && '—'}
+                    </div>
+                  </td>
+                  <td>
+                    {app.status === 'pending_payment' ? (
+                      <span className={styles.statusPill}>{statusLabel(app.status)}</span>
+                    ) : (
+                      <select
+                        className={styles.statusSelect}
+                        value={app.status}
+                        onChange={(e) => handleStatusChange(app._id, e.target.value)}
+                      >
+                        {STATUS_OPTIONS.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    )}
+                  </td>
                 </tr>
               ))}
             </tbody>
