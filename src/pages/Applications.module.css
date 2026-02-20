@@ -21,6 +21,8 @@
 .btnPrimary { padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; }
 .btnPrimary:disabled { opacity: 0.7; cursor: not-allowed; }
 
+.cancelledBanner { background: var(--amber-bg, #FFF8E1); color: var(--amber, #F57F17); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 14px; }
+
 /* Success popup */
 .successPopup { position: fixed; inset: 0; background: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 24px; animation: fadeIn 0.25s ease; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

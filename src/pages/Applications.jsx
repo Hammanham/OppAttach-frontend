@@ -17,6 +17,7 @@ export default function Applications() {
   const [payError, setPayError] = useState('')
   const [paying, setPaying] = useState(false)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
+  const [showCancelledMessage, setShowCancelledMessage] = useState(false)
 
   const refresh = () => {
     applicationService.getAll()
@@ -33,7 +34,11 @@ export default function Applications() {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
-    if (params.get('payment') === 'done') {
+    if (params.get('cancelled') === '1') {
+      setShowCancelledMessage(true)
+      window.history.replaceState({}, '', window.location.pathname)
+      setTimeout(() => setShowCancelledMessage(false), 4000)
+    } else if (params.get('payment') === 'done') {
       setShowSuccessPopup(true)
       window.history.replaceState({}, '', window.location.pathname)
       const t = setTimeout(() => {
@@ -66,6 +71,9 @@ export default function Applications() {
   if (list.length === 0) {
     return (
       <div className={styles.content}>
+        {showCancelledMessage && (
+          <div className={styles.cancelledBanner}>Payment was cancelled. You can try again when you have applications.</div>
+        )}
         {showSuccessPopup && (
           <div className={styles.successPopup} role="alert">
             <div className={styles.successPopupInner}>
@@ -84,6 +92,9 @@ export default function Applications() {
 
   return (
     <div className={styles.content}>
+      {showCancelledMessage && (
+        <div className={styles.cancelledBanner}>Payment was cancelled. You can try again from the table below.</div>
+      )}
       {showSuccessPopup && (
         <div className={styles.successPopup} role="alert">
           <div className={styles.successPopupInner}>
