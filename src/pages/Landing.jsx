@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
+import { Link } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
 import { IconSun, IconMoon } from '../components/Icons'
 import styles from './Landing.module.css'
@@ -403,7 +404,7 @@ function HowItWorks() {
 function Testimonials() {
   const [ref, inView] = useInView()
   return (
-    <section className={styles.section} ref={ref}>
+    <section id="testimonials" className={styles.section} ref={ref}>
       <div className={styles.sectionInner}>
         <div className={`${styles.sectionHeader} ${inView ? styles.fadeUp : ''}`}>
           <div className={styles.eyebrow}>What people say</div>
@@ -454,6 +455,32 @@ function CTABanner({ onEnterApp, onSignIn, onGetStarted }) {
 }
 
 /* ─── Footer ─────────────────────────────────────────────────── */
+const CONTACT_EMAIL = 'opportunity.app@gmail.com'
+
+const PLATFORM_LINKS = [
+  { label: 'Browse Roles', to: '/app/browse' },
+  { label: 'My Applications', to: '/app/applications' },
+  { label: 'Saved Roles', to: '/app/saved' },
+  { label: 'CV Builder', to: '/app/cv' },
+  { label: 'Career Guidance', to: '/app/guidance' },
+]
+
+const COMPANIES_LINKS = [
+  { label: 'Post a Role', href: `mailto:${CONTACT_EMAIL}?subject=Post%20a%20Role%20-%20IAS%20Platform` },
+  { label: 'Find Talent', href: '#for-companies' },
+  { label: 'Partner with Us', href: `mailto:${CONTACT_EMAIL}?subject=Partner%20with%20Us%20-%20IAS%20Platform` },
+  { label: 'Pricing', href: `mailto:${CONTACT_EMAIL}?subject=Pricing%20enquiry%20-%20IAS%20Platform` },
+  { label: 'Success Stories', href: '#testimonials' },
+]
+
+const SUPPORT_LINKS = [
+  { label: 'Help Centre', href: '#how-it-works' },
+  { label: 'Contact Us', href: `mailto:${CONTACT_EMAIL}?subject=Contact%20Us%20-%20IAS%20Platform` },
+  { label: 'Privacy Policy', href: `mailto:${CONTACT_EMAIL}?subject=Privacy%20Policy%20-%20IAS%20Platform` },
+  { label: 'Terms of Service', href: `mailto:${CONTACT_EMAIL}?subject=Terms%20of%20Service%20-%20IAS%20Platform` },
+  { label: 'Cookie Policy', href: `mailto:${CONTACT_EMAIL}?subject=Cookie%20Policy%20-%20IAS%20Platform` },
+]
+
 function Footer() {
   return (
     <footer className={styles.footer}>
@@ -469,20 +496,20 @@ function Footer() {
         <div className={styles.footerLinks}>
           <div className={styles.footerCol}>
             <div className={styles.footerColTitle}>Platform</div>
-            {['Browse Roles','My Applications','Saved Roles','CV Builder','Career Guidance'].map(l => (
-              <a key={l} href="#" className={styles.footerLink}>{l}</a>
+            {PLATFORM_LINKS.map(({ label, to }) => (
+              <Link key={label} to={to} className={styles.footerLink}>{label}</Link>
             ))}
           </div>
           <div className={styles.footerCol}>
             <div className={styles.footerColTitle}>Companies</div>
-            {['Post a Role','Find Talent','Partner with Us','Pricing','Success Stories'].map(l => (
-              <a key={l} href="#" className={styles.footerLink}>{l}</a>
+            {COMPANIES_LINKS.map(({ label, href }) => (
+              <a key={label} href={href} className={styles.footerLink}>{label}</a>
             ))}
           </div>
           <div className={styles.footerCol}>
             <div className={styles.footerColTitle}>Support</div>
-            {['Help Centre','Contact Us','Privacy Policy','Terms of Service','Cookie Policy'].map(l => (
-              <a key={l} href="#" className={styles.footerLink}>{l}</a>
+            {SUPPORT_LINKS.map(({ label, href }) => (
+              <a key={label} href={href} className={styles.footerLink}>{label}</a>
             ))}
           </div>
         </div>

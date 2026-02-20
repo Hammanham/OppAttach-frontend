@@ -875,8 +875,9 @@ a.btnHeroPrimary { text-decoration: none; color: #fff; }
 }
 
 /* ─── CTA Section ────────────────────────────────────────────── */
+/* Fixed dark styling: never invert in dark mode — stays dark banner with light text */
 .ctaSection {
-  background: var(--text);
+  background: #1A1714;
   padding: 100px 40px;
   position: relative;
   overflow: hidden;
