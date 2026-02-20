@@ -8,18 +8,19 @@ import OpportunityDetailModal from '../components/OpportunityDetailModal'
 
 /* ─── Helpers ─────────────────────────────────────────────────── */
 const BACKEND_STATUS_TO_UI = {
-  pending_payment: 'pending',
-  submitted: 'pending',
+  pending_payment: 'pending_payment',
+  submitted: 'submitted',
   under_review: 'review',
   shortlisted: 'review',
   accepted: 'accepted',
   rejected: 'rejected',
 }
 const STATUS_MAP = {
-  pending:  { label: 'Pending',      cls: 'pillPending' },
-  review:   { label: 'In Review',    cls: 'pillReview' },
-  accepted: { label: 'Accepted',     cls: 'pillAccepted' },
-  rejected: { label: 'Not Selected', cls: 'pillRejected' },
+  pending_payment: { label: 'Pending payment', cls: 'pillPending' },
+  submitted:       { label: 'Submitted',       cls: 'pillReview' },
+  review:          { label: 'In Review',       cls: 'pillReview' },
+  accepted:        { label: 'Accepted',        cls: 'pillAccepted' },
+  rejected:        { label: 'Not Selected',    cls: 'pillRejected' },
 }
 
 const STAT_ICONS = {
@@ -128,7 +129,7 @@ function ActivityItem({ item }) {
 
 /* ─── ApplicationRow ──────────────────────────────────────────── */
 function ApplicationRow({ app }) {
-  const statusKey = BACKEND_STATUS_TO_UI[app.status] || 'pending'
+  const statusKey = BACKEND_STATUS_TO_UI[app.status] || 'pending_payment'
   const status = STATUS_MAP[statusKey]
   return (
     <tr>
@@ -163,6 +164,34 @@ export default function Dashboard({ setActiveNav }) {
   const [loading, setLoading] = useState(true)
   const [applyOpportunity, setApplyOpportunity] = useState(null)
   const [detailOpportunity, setDetailOpportunity] = useState(null)
+
+  const refreshData = () => {
+    applicationService.getAll().then(r => r.data).then(appsData => {
+      setApplications(Array.isArray(appsData) ? appsData.map((a, i) => {
+        const opp = a.opportunityId || {}
+        const colors = getLogoColors(i)
+        const typeDisplay = opp.type === 'attachment' ? 'Industrial Attachment' : opp.type === 'internship' ? 'Internship' : opp.type
+        return { id: a._id, company: opp.company || '—', role: opp.title || '—', type: a.type, typeDisplay, applied: formatDate(a.createdAt), deadline: formatDate(opp.deadline), status: a.status, initials: getInitials(opp.company), logoBg: colors.bg, logoColor: colors.color }
+      }) : [])
+    }).catch(() => {})
+    dashboardService.getStats().then(r => r.data).then(s => setStats(s)).catch(() => {})
+    dashboardService.getActivity(10).then(r => r.data).then(activityData => {
+      setActivity(activityData.map((a) => {
+        const opp = a.opportunity || {}
+        const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
+        const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
+        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', text, time: formatActivityTime(a.createdAt) }
+      }))
+    }).catch(() => {})
+  }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') === 'done') {
+      window.history.replaceState({}, '', window.location.pathname)
+      setTimeout(refreshData, 1500)
+    }
+  }, [])
 
   useEffect(() => {
     let cancelled = false

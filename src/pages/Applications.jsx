@@ -16,6 +16,7 @@ export default function Applications() {
   const [loading, setLoading] = useState(true)
   const [payError, setPayError] = useState('')
   const [paying, setPaying] = useState(false)
+  const [showSuccessPopup, setShowSuccessPopup] = useState(false)
 
   const refresh = () => {
     applicationService.getAll()
@@ -28,6 +29,21 @@ export default function Applications() {
       .then(res => setList(Array.isArray(res.data) ? res.data : []))
       .catch(() => setList([]))
       .finally(() => setLoading(false))
+  }, [])
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    if (params.get('payment') === 'done') {
+      setShowSuccessPopup(true)
+      window.history.replaceState({}, '', window.location.pathname)
+      const t = setTimeout(() => {
+        applicationService.getAll()
+          .then(res => setList(Array.isArray(res.data) ? res.data : []))
+          .catch(() => {})
+      }, 1500)
+      const hideT = setTimeout(() => setShowSuccessPopup(false), 5000)
+      return () => { clearTimeout(t); clearTimeout(hideT) }
+    }
   }, [])
 
   const handlePayFor = (id) => {
@@ -50,6 +66,16 @@ export default function Applications() {
   if (list.length === 0) {
     return (
       <div className={styles.content}>
+        {showSuccessPopup && (
+          <div className={styles.successPopup} role="alert">
+            <div className={styles.successPopupInner}>
+              <span className={styles.successIcon}>✓</span>
+              <h3 className={styles.successTitle}>Thank you!</h3>
+              <p className={styles.successText}>Thanks for submitting your application. We’ll be in touch.</p>
+              <button type="button" className={styles.successClose} onClick={() => setShowSuccessPopup(false)} aria-label="Close">×</button>
+            </div>
+          </div>
+        )}
         <h2 className={styles.title}>My Applications</h2>
         <p className={styles.msg}>You have not applied to any opportunities yet. Browse roles and apply from there.</p>
       </div>
@@ -58,6 +84,16 @@ export default function Applications() {
 
   return (
     <div className={styles.content}>
+      {showSuccessPopup && (
+        <div className={styles.successPopup} role="alert">
+          <div className={styles.successPopupInner}>
+            <span className={styles.successIcon}>✓</span>
+            <h3 className={styles.successTitle}>Thank you!</h3>
+            <p className={styles.successText}>Thanks for submitting your application. We’ll be in touch.</p>
+            <button type="button" className={styles.successClose} onClick={() => setShowSuccessPopup(false)} aria-label="Close">×</button>
+          </div>
+        </div>
+      )}
       <h2 className={styles.title}>My Applications</h2>
       <p className={styles.meta}>{list.length} application(s)</p>
       <div className={styles.tableWrap}>
