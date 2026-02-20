@@ -128,17 +128,19 @@ function Navbar({ onEnterApp, onSignIn, onGetStarted }) {
           ))}
         </nav>
 
-        {/* Actions */}
+        {/* Actions (Login/Sign up - hidden on mobile) */}
         <div className={styles.navActions}>
-          <button className={styles.themeBtn} onClick={toggleTheme} aria-label="Toggle theme">
-            <span className={`${styles.themeIcon} ${theme === 'light' ? styles.visible : styles.hidden}`}><IconSun size={16}/></span>
-            <span className={`${styles.themeIcon} ${theme === 'dark'  ? styles.visible : styles.hidden}`}><IconMoon size={16}/></span>
-          </button>
           <button className={styles.btnOutline} onClick={handleSignIn}>Login</button>
           <button className={styles.btnFilled} onClick={handleGetStarted}>Sign up</button>
         </div>
 
-        {/* Hamburger */}
+        {/* Theme toggle - always visible top right */}
+        <button className={styles.themeBtn} onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+          <span className={`${styles.themeIcon} ${theme === 'light' ? styles.visible : styles.hidden}`}><IconSun size={16}/></span>
+          <span className={`${styles.themeIcon} ${theme === 'dark'  ? styles.visible : styles.hidden}`}><IconMoon size={16}/></span>
+        </button>
+
+        {/* Hamburger (mobile only) */}
         <button className={styles.hamburger} onClick={() => setMenuOpen(o => !o)} aria-label="Menu">
           <span className={`${styles.bar} ${menuOpen ? styles.barOpen1 : ''}`}/>
           <span className={`${styles.bar} ${menuOpen ? styles.barOpen2 : ''}`}/>
@@ -149,6 +151,13 @@ function Navbar({ onEnterApp, onSignIn, onGetStarted }) {
       {/* Mobile menu */}
       {menuOpen && (
         <div className={styles.mobileMenu}>
+          <div className={styles.mobileThemeRow}>
+            <span className={styles.mobileThemeLabel}>Theme</span>
+            <button className={styles.themeBtn} onClick={toggleTheme} aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}>
+              <span className={`${styles.themeIcon} ${theme === 'light' ? styles.visible : styles.hidden}`}><IconSun size={16}/></span>
+              <span className={`${styles.themeIcon} ${theme === 'dark'  ? styles.visible : styles.hidden}`}><IconMoon size={16}/></span>
+            </button>
+          </div>
           {NAV_LINKS.map(link => (
             <a key={link} href={`#${link.toLowerCase().replace(/\s/g,'-')}`}
                className={styles.mobileLink} onClick={() => setMenuOpen(false)}>

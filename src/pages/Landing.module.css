@@ -233,6 +233,22 @@
 
 .mobileLink:hover { background: var(--bg2); color: var(--text); }
 
+.mobileThemeRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 12px;
+  margin-bottom: 4px;
+  border-radius: 8px;
+  background: var(--bg2);
+}
+
+.mobileThemeLabel {
+  font-size: 15px;
+  font-weight: 450;
+  color: var(--text2);
+}
+
 .mobileCtas {
   display: flex;
   gap: 10px;
