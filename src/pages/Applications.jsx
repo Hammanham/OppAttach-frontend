@@ -58,7 +58,8 @@ export default function Applications() {
       .then(res => {
         const link = res.data?.paymentLink
         if (link) {
-          window.location.href = link
+          // Open in new tab so closing it returns user to app (avoids getting stuck on Paystack)
+          window.open(link, '_blank', 'noopener,noreferrer')
           return
         }
         refresh()

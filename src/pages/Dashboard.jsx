@@ -128,7 +128,7 @@ function ActivityItem({ item }) {
 }
 
 /* ─── ApplicationRow ──────────────────────────────────────────── */
-function ApplicationRow({ app }) {
+function ApplicationRow({ app, onView }) {
   const statusKey = BACKEND_STATUS_TO_UI[app.status] || 'pending_payment'
   const status = STATUS_MAP[statusKey]
   return (
@@ -147,7 +147,7 @@ function ApplicationRow({ app }) {
       <td>{app.deadline}</td>
       <td><span className={`status-pill ${status.cls}`}>{status.label}</span></td>
       <td>
-        <button className="btn btn-ghost btn-sm">View</button>
+        <button type="button" className="btn btn-ghost btn-sm" onClick={() => onView?.('applications')}>View</button>
       </td>
     </tr>
   )
@@ -432,7 +432,7 @@ export default function Dashboard({ setActiveNav }) {
               ) : applications.length === 0 ? (
                 <tr><td colSpan={7} style={{ padding: 24, color: 'var(--text3)', textAlign: 'center' }}>No applications yet. Browse opportunities and apply to get started.</td></tr>
               ) : (
-                applications.map(app => <ApplicationRow key={app.id} app={app} />)
+                applications.map(app => <ApplicationRow key={app.id} app={app} onView={setActiveNav} />)
               )}
             </tbody>
           </table>

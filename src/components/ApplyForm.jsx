@@ -36,7 +36,10 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
 
       if (data.paymentLink) {
         setRedirecting(true)
-        window.location.href = data.paymentLink
+        // Open in new tab so closing it returns user to app (avoids getting stuck on Paystack)
+        window.open(data.paymentLink, '_blank', 'noopener,noreferrer')
+        setRedirecting(false)
+        onSuccess?.()
         return
       }
       onSuccess?.()
