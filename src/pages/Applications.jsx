@@ -24,6 +24,7 @@ export default function Applications() {
   const [loading, setLoading] = useState(true)
   const [payError, setPayError] = useState('')
   const [paying, setPaying] = useState(false)
+  const [removing, setRemoving] = useState(false)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [showCancelledMessage, setShowCancelledMessage] = useState(false)
 
@@ -58,6 +59,16 @@ export default function Applications() {
       return () => { clearTimeout(t); clearTimeout(hideT) }
     }
   }, [])
+
+  const handleRemove = (id) => {
+    if (!window.confirm('Remove this application from your list?')) return
+    setPayError('')
+    setRemoving(true)
+    applicationService.withdraw(id)
+      .then(() => refresh())
+      .catch(err => setPayError(err.response?.data?.message || 'Could not remove application.'))
+      .finally(() => setRemoving(false))
+  }
 
   const handlePayFor = (id) => {
     setPayError('')
@@ -137,9 +148,16 @@ export default function Applications() {
                 <td>{app.opportunityId?.type || '—'}</td>
                 <td><span className={`${styles.status} ${styles[STATUS_CLASS[app.status] || 'statusPending']}`}>{STATUS_LABELS[app.status] || app.status}</span></td>
                 <td>
-                  {app.status === 'pending_payment' && (
-                    <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>
-                  )}
+                  <div className={styles.cellActions}>
+                    {app.status === 'pending_payment' && (
+                      <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>
+                    )}
+                    {(app.status === 'pending_payment' || app.status === 'submitted') && (
+                      <button type="button" className={styles.removeBtn} onClick={() => handleRemove(app._id)} disabled={removing}>
+                        {removing ? '…' : 'Remove'}
+                      </button>
+                    )}
+                  </div>
                 </td>
               </tr>
             ))}
