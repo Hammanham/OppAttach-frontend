@@ -531,6 +531,28 @@ a.btnHeroPrimary { text-decoration: none; color: #fff; }
 
 .miniRole:hover { background: var(--bg2); transform: translateX(3px); }
 
+.miniRolePlaceholder {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 120px;
+}
+
+.miniRoleSkeleton {
+  display: block;
+  height: 52px;
+  border-radius: 10px;
+  background: var(--bg2);
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.miniRoleEmpty {
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--text3);
+}
+
 .miniLogo {
   width: 36px; height: 36px;
   border-radius: 8px;

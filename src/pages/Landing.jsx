@@ -2,7 +2,24 @@ import { useState, useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { useTheme } from '../context/ThemeContext'
 import { IconSun, IconMoon } from '../components/Icons'
+import { opportunityService } from '../services/api'
 import styles from './Landing.module.css'
+
+/* ─── Helpers for opportunities ──────────────────────────────── */
+const LOGO_COLORS = [
+  { bg: '#FFF3E0', color: '#E65100' },
+  { bg: '#E3F2FD', color: '#0D47A1' },
+  { bg: '#E8F5E9', color: '#1B5E20' },
+]
+function getInitials(s) {
+  if (!s || typeof s !== 'string') return '—'
+  return s.split(/\s+/).map(w => w[0]).join('').slice(0, 2).toUpperCase()
+}
+function formatType(type) {
+  if (type === 'attachment') return 'Industrial Attachment'
+  if (type === 'internship') return 'Internship'
+  return type || '—'
+}
 
 /* ─── Data ──────────────────────────────────────────────────── */
 const FEATURES = [
@@ -178,6 +195,27 @@ function Navbar({ onEnterApp, onSignIn, onGetStarted }) {
 /* ─── Hero ───────────────────────────────────────────────────── */
 function Hero({ onEnterApp, onSignIn, onGetStarted }) {
   const enter = onSignIn || onGetStarted || onEnterApp
+  const [opportunities, setOpportunities] = useState([])
+  const [total, setTotal] = useState(0)
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    let cancelled = false
+    opportunityService.getAll({ page: 1, limit: 5 })
+      .then(res => {
+        if (cancelled) return
+        setOpportunities(res.data?.opportunities ?? [])
+        setTotal(res.data?.total ?? 0)
+      })
+      .catch(() => { if (!cancelled) setOpportunities([]); setTotal(0) })
+      .finally(() => { if (!cancelled) setLoading(false) })
+    return () => { cancelled = true }
+  }, [])
+
+  const displayCount = total > 0 ? total : '...'
+  const typeDisplay = (opp) => opp.duration ? `${opp.duration} ${formatType(opp.type)}` : formatType(opp.type)
+  const isClosingSoon = (opp) => opp.deadline && (new Date(opp.deadline) - Date.now()) < 7 * 24 * 60 * 60 * 1000
+
   return (
     <section className={styles.hero}>
       {/* Background orbs */}
@@ -189,7 +227,7 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
 
       <div className={styles.heroContent}>
         <div className={`${styles.heroBadge} ${styles.fadeUp}`} style={{ animationDelay: '.05s' }}>
-          <span className={styles.badgeDot} /> Now live — 124 new roles this week
+          <span className={styles.badgeDot} /> Now live — {displayCount} role{total !== 1 ? 's' : ''} available
         </div>
 
         <h1 className={`${styles.heroHeading} ${styles.fadeUp}`} style={{ animationDelay: '.12s' }}>
@@ -226,7 +264,7 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
         </div>
       </div>
 
-      {/* Hero visual card */}
+      {/* Hero visual card — real opportunities */}
       <div className={`${styles.heroCard} ${styles.fadeUp}`} style={{ animationDelay: '.18s' }}>
         <div className={styles.heroCardInner}>
           <div className={styles.heroCardHeader}>
@@ -236,22 +274,37 @@ function Hero({ onEnterApp, onSignIn, onGetStarted }) {
             </span>
           </div>
 
-          {[
-            { initials:'SF', bg:'#FFF3E0', color:'#E65100', title:'Software Engineering Intern', company:'Safaricom', type:'6-month Industrial Attachment', tag:'New', tagColor: 'green' },
-            { initials:'KP', bg:'#E3F2FD', color:'#0D47A1', title:'Data Analyst Intern',        company:'Kenya Power', type:'Internship', tag:'Closing Soon', tagColor: 'amber' },
-            { initials:'KB', bg:'#E8F5E9', color:'#1B5E20', title:'Finance Industrial Attachment', company:'KCB Group', type:'3-month Internship', tag:'New', tagColor: 'green' },
-          ].map((r, i) => (
-            <div key={i} className={styles.miniRole} style={{ animationDelay: `${.3 + i * .08}s` }}>
-              <div className={styles.miniLogo} style={{ background: r.bg, color: r.color }}>{r.initials}</div>
-              <div className={styles.miniInfo}>
-                <div className={styles.miniTitle}>{r.title}</div>
-                <div className={styles.miniMeta}>{r.company} · {r.type}</div>
-              </div>
-              <span className={`${styles.miniTag} ${styles[`tag_${r.tagColor}`]}`}>{r.tag}</span>
+          {loading ? (
+            <div className={styles.miniRolePlaceholder}>
+              <span className={styles.miniRoleSkeleton} />
+              <span className={styles.miniRoleSkeleton} />
+              <span className={styles.miniRoleSkeleton} />
             </div>
-          ))}
+          ) : opportunities.length === 0 ? (
+            <div className={styles.miniRolePlaceholder}>
+              <p className={styles.miniRoleEmpty}>No opportunities yet. Check back soon.</p>
+            </div>
+          ) : (
+            opportunities.slice(0, 5).map((opp, i) => {
+              const colors = LOGO_COLORS[i % LOGO_COLORS.length]
+              const tag = isClosingSoon(opp) ? 'Closing Soon' : 'New'
+              const tagColor = isClosingSoon(opp) ? 'amber' : 'green'
+              return (
+                <div key={opp._id} className={styles.miniRole} style={{ animationDelay: `${.3 + i * .08}s` }}>
+                  <div className={styles.miniLogo} style={{ background: colors.bg, color: colors.color }}>{getInitials(opp.company)}</div>
+                  <div className={styles.miniInfo}>
+                    <div className={styles.miniTitle}>{opp.title}</div>
+                    <div className={styles.miniMeta}>{opp.company} · {typeDisplay(opp)}</div>
+                  </div>
+                  <span className={`${styles.miniTag} ${styles[`tag_${tagColor}`]}`}>{tag}</span>
+                </div>
+              )
+            })
+          )}
 
-          <button className={styles.heroCardBtn} onClick={enter}>View all 124 roles →</button>
+          <button className={styles.heroCardBtn} onClick={enter}>
+            {total > 0 ? `View all ${total} role${total !== 1 ? 's' : ''} →` : 'Browse opportunities →'}
+          </button>
         </div>
       </div>
     </section>
