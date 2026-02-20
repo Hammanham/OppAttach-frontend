@@ -26,8 +26,13 @@
 .table td { padding: 12px 16px; border-bottom: 1px solid var(--border); color: var(--text); }
 .badgeActive { padding: 4px 10px; border-radius: 20px; font-size: 12px; background: var(--green-bg); color: var(--green); }
 .badgeInactive { padding: 4px 10px; border-radius: 20px; font-size: 12px; background: var(--surface2); color: var(--text2); }
-.statusPill { padding: 4px 10px; border-radius: 20px; font-size: 12px; background: var(--surface2); color: var(--text2); }
-.statusSelect { padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-size: 13px; cursor: pointer; min-width: 140px; }
+.statusPill { padding: 4px 10px; border-radius: 20px; font-size: 12px; }
+.statusPillPending { background: var(--amber-bg); color: var(--amber); }
+.statusPillGreen { background: var(--green-bg); color: var(--green); }
+.statusPillRed { background: var(--red-bg); color: var(--red); }
+.statusSelect { padding: 6px 10px; border-radius: var(--radius-sm); border: 1px solid var(--border); font-size: 13px; cursor: pointer; min-width: 140px; }
+.statusSelectGreen { background: var(--green-bg); color: var(--green); font-weight: 500; }
+.statusSelectRed { background: var(--red-bg); color: var(--red); font-weight: 500; }
 .docLinks { display: flex; gap: 8px; flex-wrap: wrap; }
 .docLink { color: var(--accent); font-size: 13px; text-decoration: none; }
 .docLink:hover { text-decoration: underline; }

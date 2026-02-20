@@ -479,7 +479,7 @@ tr:hover td { background: var(--bg); }
 .pillPending  { background: var(--amber-bg); color: var(--amber); }
 .pillReview   { background: var(--blue-bg);  color: var(--blue); }
 .pillAccepted { background: var(--green-bg); color: var(--green); }
-.pillRejected { background: var(--accent-bg); color: var(--accent); }
+.pillRejected { background: var(--red-bg); color: var(--red); }
 
 .company-row {
   display: flex;

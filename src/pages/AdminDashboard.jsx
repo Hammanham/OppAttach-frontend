@@ -204,10 +204,10 @@ export default function AdminDashboard() {
                   </td>
                   <td>
                     {app.status === 'pending_payment' ? (
-                      <span className={styles.statusPill}>{statusLabel(app.status)}</span>
+                      <span className={`${styles.statusPill} ${styles.statusPillPending}`}>{statusLabel(app.status)}</span>
                     ) : (
                       <select
-                        className={styles.statusSelect}
+                        className={`${styles.statusSelect} ${app.status === 'rejected' ? styles.statusSelectRed : styles.statusSelectGreen}`}
                         value={app.status}
                         onChange={(e) => handleStatusChange(app._id, e.target.value)}
                       >

@@ -10,6 +10,14 @@ const STATUS_LABELS = {
   rejected: 'Not selected',
   accepted: 'Accepted',
 }
+const STATUS_CLASS = {
+  pending_payment: 'statusPending',
+  submitted: 'statusGreen',
+  under_review: 'statusGreen',
+  shortlisted: 'statusGreen',
+  accepted: 'statusGreen',
+  rejected: 'statusRed',
+}
 
 export default function Applications() {
   const [list, setList] = useState([])
@@ -128,7 +136,7 @@ export default function Applications() {
                   </div>
                 </td>
                 <td>{app.opportunityId?.type || '—'}</td>
-                <td><span className={styles.status}>{STATUS_LABELS[app.status] || app.status}</span></td>
+                <td><span className={`${styles.status} ${styles[STATUS_CLASS[app.status] || 'statusPending']}`}>{STATUS_LABELS[app.status] || app.status}</span></td>
                 <td>
                   {app.status === 'pending_payment' && (
                     <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>

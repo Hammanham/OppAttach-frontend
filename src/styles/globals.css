@@ -22,6 +22,8 @@
   --blue-bg:   #D6E8F8;
   --amber:     #92570A;
   --amber-bg:  #FEF3C7;
+  --red:       #B91C1C;
+  --red-bg:    #FEE2E2;
   --shadow:    0 2px 8px rgba(26,23,20,.07), 0 8px 32px rgba(26,23,20,.05);
   --shadow-lg: 0 4px 16px rgba(26,23,20,.10), 0 16px 48px rgba(26,23,20,.08);
   --radius:    14px;
@@ -47,6 +49,8 @@
   --blue-bg:   #0D1E30;
   --amber:     #F6C065;
   --amber-bg:  #241900;
+  --red:       #EF4444;
+  --red-bg:    #2D1515;
   --shadow:    0 2px 8px rgba(0,0,0,.22), 0 8px 32px rgba(0,0,0,.18);
   --shadow-lg: 0 4px 16px rgba(0,0,0,.30), 0 16px 48px rgba(0,0,0,.24);
 }
