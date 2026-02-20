@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { applicationService } from '../services/api'
 import styles from './Applications.module.css'
 
@@ -26,10 +26,6 @@ export default function Applications() {
   const [paying, setPaying] = useState(false)
   const [showSuccessPopup, setShowSuccessPopup] = useState(false)
   const [showCancelledMessage, setShowCancelledMessage] = useState(false)
-  const [payModalApp, setPayModalApp] = useState(null)
-  const [mpesaPhone, setMpesaPhone] = useState('')
-  const [mpesaSent, setMpesaSent] = useState(false)
-  const pollRef = useRef(null)
 
   const refresh = () => {
     applicationService.getAll()
@@ -63,14 +59,7 @@ export default function Applications() {
     }
   }, [])
 
-  const handleOpenPayModal = (app) => {
-    setPayModalApp(app)
-    setMpesaPhone('')
-    setMpesaSent(false)
-    setPayError('')
-  }
-
-  const handlePayWithCard = (id) => {
+  const handlePayFor = (id) => {
     setPayError('')
     setPaying(true)
     applicationService.pay(id)
@@ -78,47 +67,11 @@ export default function Applications() {
         const link = res.data?.paymentLink
         if (link) {
           window.open(link, '_blank', 'noopener,noreferrer')
-          setPayModalApp(null)
           return
         }
         refresh()
       })
       .catch(err => setPayError(err.response?.data?.message || 'Payment request failed.'))
-      .finally(() => setPaying(false))
-  }
-
-  const handlePayWithMpesa = (id) => {
-    if (!mpesaPhone.trim()) {
-      setPayError('Enter your M-Pesa number')
-      return
-    }
-    setPayError('')
-    setPaying(true)
-    applicationService.chargeMpesa(id, mpesaPhone.trim())
-      .then(() => {
-        setMpesaSent(true)
-        if (pollRef.current) clearInterval(pollRef.current)
-        pollRef.current = setInterval(() => {
-          applicationService.getAll()
-            .then(res => {
-              const apps = Array.isArray(res.data) ? res.data : []
-              const updated = apps.find(a => a._id === id)
-              if (updated?.status === 'submitted') {
-                if (pollRef.current) clearInterval(pollRef.current)
-                pollRef.current = null
-                setShowSuccessPopup(true)
-                setList(apps)
-                setPayModalApp(null)
-                setMpesaSent(false)
-              }
-            })
-        }, 3000)
-        setTimeout(() => {
-          if (pollRef.current) clearInterval(pollRef.current)
-          pollRef.current = null
-        }, 120000)
-      })
-      .catch(err => setPayError(err.response?.data?.message || 'M-Pesa request failed'))
       .finally(() => setPaying(false))
   }
 
@@ -134,7 +87,7 @@ export default function Applications() {
             <div className={styles.successPopupInner}>
               <span className={styles.successIcon}>✓</span>
               <h3 className={styles.successTitle}>Thank you!</h3>
-              <p className={styles.successText}>Thanks for submitting your application. We’ll be in touch.</p>
+              <p className={styles.successText}>Thanks for submitting your application. We'll be in touch.</p>
               <button type="button" className={styles.successClose} onClick={() => setShowSuccessPopup(false)} aria-label="Close">×</button>
             </div>
           </div>
@@ -155,7 +108,7 @@ export default function Applications() {
           <div className={styles.successPopupInner}>
             <span className={styles.successIcon}>✓</span>
             <h3 className={styles.successTitle}>Thank you!</h3>
-            <p className={styles.successText}>Thanks for submitting your application. We’ll be in touch.</p>
+            <p className={styles.successText}>Thanks for submitting your application. We'll be in touch.</p>
             <button type="button" className={styles.successClose} onClick={() => setShowSuccessPopup(false)} aria-label="Close">×</button>
           </div>
         </div>
@@ -185,7 +138,7 @@ export default function Applications() {
                 <td><span className={`${styles.status} ${styles[STATUS_CLASS[app.status] || 'statusPending']}`}>{STATUS_LABELS[app.status] || app.status}</span></td>
                 <td>
                   {app.status === 'pending_payment' && (
-                    <button type="button" className={styles.payBtn} onClick={() => handleOpenPayModal(app)} disabled={paying}>Pay now</button>
+                    <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>
                   )}
                 </td>
               </tr>
@@ -194,58 +147,7 @@ export default function Applications() {
         </table>
       </div>
       {payError && <p className={styles.payError}>{payError}</p>}
-
-      {/* Pay modal: M-Pesa (phone) or Card */}
-      {payModalApp && (
-        <div className={styles.payOverlay} onClick={(e) => e.target === e.currentTarget && setPayModalApp(null)}>
-          <div className={styles.payCard} onClick={e => e.stopPropagation()}>
-            <h3 className={styles.payTitle}>Pay application fee</h3>
-            {mpesaSent ? (
-              <div className={styles.mpesaSent}>
-                <p className={styles.mpesaSentText}>Check your phone — complete the payment on your M-Pesa prompt.</p>
-                <p className={styles.mpesaSentHint}>Enter the OTP and PIN when prompted.</p>
-                <button type="button" className={styles.btnPrimary} onClick={() => setPayModalApp(null)}>Close</button>
-              </div>
-            ) : (
-              <>
-                <div className={styles.payMethod}>
-                  <label className={styles.payLabel}>Pay with M-Pesa</label>
-                  <p className={styles.payHint}>Enter 07XX or 2547XX — we'll add 254 automatically</p>
-                  <input
-                    type="tel"
-                    className={styles.payInput}
-                    placeholder="0712345678 or 254712345678"
-                    value={mpesaPhone}
-                    onChange={e => setMpesaPhone(e.target.value)}
-                    disabled={paying}
-                  />
-                  <button
-                    type="button"
-                    className={styles.btnPrimary}
-                    disabled={paying || !mpesaPhone.trim()}
-                    onClick={() => handlePayWithMpesa(payModalApp._id)}
-                  >
-                    {paying ? 'Sending…' : 'Send M-Pesa prompt'}
-                  </button>
-                </div>
-                <div className={styles.payDivider}>or</div>
-                <div className={styles.payMethod}>
-                  <button
-                    type="button"
-                    className={styles.btnSecondary}
-                    disabled={paying}
-                    onClick={() => handlePayWithCard(payModalApp._id)}
-                  >
-                    Pay with Card / Bank
-                  </button>
-                </div>
-                {payError && <p className={styles.payError}>{payError}</p>}
-                <button type="button" className={styles.payClose} onClick={() => setPayModalApp(null)}>Cancel</button>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+      <p className={styles.payHint}>Pay with M-Pesa or Card: click Pay now — on the payment page choose M-Pesa and enter 254XXXXXXXXX</p>
     </div>
   )
 }
