@@ -10,7 +10,7 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('overview') // overview | opportunities | applications
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
-  const [form, setForm] = useState({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 5, isActive: true })
+  const [form, setForm] = useState({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 350, isActive: true })
 
   useEffect(() => {
     dashboardService.getStats()
@@ -44,7 +44,7 @@ export default function AdminDashboard() {
       .then(() => {
         setShowForm(false)
         setEditing(null)
-        setForm({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 5, isActive: true })
+        setForm({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 350, isActive: true })
         opportunityService.getAdminAll({ limit: 100 }).then(r => setOpportunities(r.data.opportunities || []))
       })
       .catch(() => {})
@@ -100,7 +100,7 @@ export default function AdminDashboard() {
       {tab === 'opportunities' && (
         <>
           <div className={styles.toolbar}>
-            <button type="button" className={styles.btnPrimary} onClick={() => { setEditing(null); setForm({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 5, isActive: true }); setShowForm(true); }}>
+            <button type="button" className={styles.btnPrimary} onClick={() => { setEditing(null); setForm({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 350, isActive: true }); setShowForm(true); }}>
               + New opportunity
             </button>
           </div>
