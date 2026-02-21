@@ -76,7 +76,8 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
       } else if (mode === 'forgot') {
         const res = await authService.forgotPassword(email)
         setVerificationMessage(res.data?.message || 'If an account exists, a reset link has been sent.')
-        setMode('login')
+        if (res.data?.smtpError) setError(`SMTP error: ${res.data.smtpError}`)
+        else setMode('login')
       } else if (mode === 'verify') {
         await verifyEmail(pendingEmail, otp)
       } else {
