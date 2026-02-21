@@ -6,17 +6,19 @@ import styles from './Login.module.css'
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
 export default function Login({ onBack, mode: initialMode = 'login' }) {
-  const [mode, setMode] = useState(initialMode) // 'login' | 'register' | 'forgot'
+  const [mode, setMode] = useState(initialMode) // 'login' | 'register' | 'forgot' | 'verify'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
-  const [role, setRole] = useState('student') // 'student' | 'graduate'
+  const [role, setRole] = useState('student')
+  const [otp, setOtp] = useState('')
+  const [pendingEmail, setPendingEmail] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(false)
   const [verificationMessage, setVerificationMessage] = useState('')
   const googleButtonRef = useRef(null)
   const modeRoleRef = useRef({ mode: initialMode, role: 'student' })
-  const { login, register, loginWithGoogle } = useAuth()
+  const { login, register, verifyEmail, loginWithGoogle } = useAuth()
 
   modeRoleRef.current = { mode, role }
 
@@ -75,13 +77,14 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
         const res = await authService.forgotPassword(email)
         setVerificationMessage(res.data?.message || 'If an account exists, a reset link has been sent.')
         setMode('login')
+      } else if (mode === 'verify') {
+        await verifyEmail(pendingEmail, otp)
       } else {
         const data = await register({ name, email, password, role })
-        if (data?.verificationEmailSent && data?.message) {
-          setVerificationMessage(data.message)
-        } else if (data?.message) {
-          setVerificationMessage(data.message)
-        }
+        if (data?.token) return
+        setPendingEmail(email)
+        setMode('verify')
+        setVerificationMessage(data?.message || 'OTP sent. Please check your email.')
       }
     } catch (err) {
       const msg = err.response?.data?.message || err.response?.data?.errors?.[0]?.msg || err.message || 'Something went wrong'
@@ -90,6 +93,19 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
         setMode('login')
         setError('This email is already registered. Log in instead.')
       }
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleResendOTP = async () => {
+    setError('')
+    setLoading(true)
+    try {
+      const res = await authService.resendVerification(pendingEmail)
+      setVerificationMessage(res.data?.message || 'OTP resent.')
+    } catch (err) {
+      setError(err.response?.data?.message || 'Could not resend OTP.')
     } finally {
       setLoading(false)
     }
@@ -105,13 +121,16 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
         )}
         <div className={styles.logo}>IAS</div>
         <h1 className={styles.title}>
-          {mode === 'login' ? 'Log in' : mode === 'forgot' ? 'Forgot password' : 'Sign up'}
+          {mode === 'login' ? 'Log in' : mode === 'forgot' ? 'Forgot password' : mode === 'verify' ? 'Verify email' : 'Sign up'}
         </h1>
         {mode === 'register' && (
           <p className={styles.sub}>Create an account to browse and apply for opportunities.</p>
         )}
         {mode === 'forgot' && (
           <p className={styles.sub}>Enter your email and we’ll send you a link to reset your password.</p>
+        )}
+        {mode === 'verify' && (
+          <p className={styles.sub}>Enter the 6-digit code we sent to {pendingEmail}</p>
         )}
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -120,6 +139,28 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
             <div className={styles.success} role="alert">
               {verificationMessage}
             </div>
+          )}
+          {mode === 'verify' && (
+            <>
+              <label className={styles.label}>
+                6-digit code
+                <input
+                  type="text"
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  maxLength={6}
+                  className={styles.input}
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value.replace(/\D/g, ''))}
+                  placeholder="000000"
+                  autoComplete="one-time-code"
+                  autoFocus
+                />
+              </label>
+              <button type="button" className={styles.toggleLink} onClick={handleResendOTP} disabled={loading} style={{ fontSize: 14, marginTop: -8 }}>
+                Resend OTP
+              </button>
+            </>
           )}
           {mode === 'register' && (
             <label className={styles.label}>
@@ -149,6 +190,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               </select>
             </label>
           )}
+          {mode !== 'verify' && (
           <label className={styles.label}>
             Email
             <input
@@ -161,6 +203,7 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               placeholder="you@example.com"
             />
           </label>
+          )}
           {(mode === 'login' || mode === 'register') && (
             <label className={styles.label}>
               Password
@@ -188,11 +231,11 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               </button>
             </div>
           )}
-          <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Please wait…' : mode === 'login' ? 'Log in' : mode === 'forgot' ? 'Send reset link' : 'Sign up'}
+          <button type="submit" className={styles.submitBtn} disabled={loading || (mode === 'verify' && otp.length !== 6)}>
+            {loading ? 'Please wait…' : mode === 'login' ? 'Log in' : mode === 'forgot' ? 'Send reset link' : mode === 'verify' ? 'Verify' : 'Sign up'}
           </button>
 
-          {GOOGLE_CLIENT_ID && (mode === 'login' || mode === 'register') && (
+          {GOOGLE_CLIENT_ID && (mode === 'login' || mode === 'register') && mode !== 'verify' && (
             <>
               <div className={styles.divider}>or</div>
               <div ref={googleButtonRef} className={styles.googleBtnWrap} />
@@ -207,9 +250,9 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               Sign up
             </button>
           )}
-          {mode === 'register' && 'Already have an account? '}
-          {mode === 'register' && (
-            <button type="button" className={styles.toggleLink} onClick={() => { setMode('login'); setError(''); setVerificationMessage(''); }}>
+          {(mode === 'register' || mode === 'verify') && 'Already have an account? '}
+          {(mode === 'register' || mode === 'verify') && (
+            <button type="button" className={styles.toggleLink} onClick={() => { setMode('login'); setError(''); setVerificationMessage(''); setOtp(''); setPendingEmail(''); }}>
               Log in
             </button>
           )}

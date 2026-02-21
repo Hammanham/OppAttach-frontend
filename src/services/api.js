@@ -64,9 +64,10 @@ export const authService = {
   logout:          ()            => api.post('/auth/logout'),
   me:              ()            => api.get('/auth/me'),
   refresh:         ()            => api.post('/auth/refresh'),
-  forgotPassword:  (email)       => api.post('/auth/forgot-password', { email }),
-  resetPassword:   (token, password) => api.post('/auth/reset-password', { token, password }),
-  resendVerification: (email)    => api.post('/auth/resend-verification', email ? { email } : {}),
+  forgotPassword:    (email)       => api.post('/auth/forgot-password', { email }),
+  resetPassword:     (token, password) => api.post('/auth/reset-password', { token, password }),
+  verifyEmail:       (email, otp)  => api.post('/auth/verify-email', { email, otp }),
+  resendVerification: (email)      => api.post('/auth/resend-verification', email ? { email } : {}),
 }
 
 // ══════════════════════════════════════════════════════════════

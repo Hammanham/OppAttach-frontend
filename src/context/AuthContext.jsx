@@ -41,8 +41,20 @@ export function AuthProvider({ children }) {
 
   const register = async (data) => {
     const res = await authService.register(data)
-    if (res.data.token) localStorage.setItem('ias_token', res.data.token)
-    setUser(res.data.user)
+    // OTP flow: no token until verify-email succeeds
+    if (res.data.token) {
+      localStorage.setItem('ias_token', res.data.token)
+      setUser(res.data.user)
+    }
+    return res.data
+  }
+
+  const verifyEmail = async (email, otp) => {
+    const res = await authService.verifyEmail(email, otp)
+    if (res.data.token) {
+      localStorage.setItem('ias_token', res.data.token)
+      setUser(res.data.user)
+    }
     return res.data
   }
 
@@ -60,7 +72,7 @@ export function AuthProvider({ children }) {
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, loginWithGoogle, logout, refreshUser }}>
+    <AuthContext.Provider value={{ user, loading, login, register, verifyEmail, loginWithGoogle, logout, refreshUser }}>
       {children}
     </AuthContext.Provider>
   )
