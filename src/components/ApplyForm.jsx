@@ -23,7 +23,6 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
       return
     }
     setLoading(true)
-    const popup = window.open('about:blank', '_blank', 'noopener,noreferrer')
     try {
       const payload = {
         opportunityId: opportunity._id,
@@ -34,15 +33,12 @@ export default function ApplyForm({ opportunity, onSuccess, onCancel }) {
       const res = await applicationService.create(payload)
       const data = res.data
 
-      if (data.paymentLink && popup) {
-        popup.location.href = data.paymentLink
-        onSuccess?.()
+      if (data.paymentLink) {
+        window.location.href = data.paymentLink
         return
       }
-      if (popup) popup.close()
       onSuccess?.()
     } catch (err) {
-      if (popup) popup.close()
       setError(err.response?.data?.message || err.message || 'Submission failed.')
     } finally {
       setLoading(false)
