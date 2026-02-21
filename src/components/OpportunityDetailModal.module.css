@@ -47,7 +47,7 @@
 .description { font-size: 14px; color: var(--text2); line-height: 1.5; margin: 0 0 16px; white-space: pre-wrap; }
 .list { margin: 0 0 16px; padding-left: 20px; font-size: 14px; color: var(--text2); line-height: 1.5; }
 .actions { padding: 12px 20px; border-top: 1px solid var(--border); display: flex; gap: 10px; align-items: center; }
-.applyBtn { padding: 8px 14px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.applyBtn { padding: 8px 14px; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer; font-family: inherit; }
 .applyBtn:hover { opacity: 0.9; }
 .secondaryBtn {
   padding: 8px 14px;

@@ -13,7 +13,7 @@
 .statusGreen { background: var(--green-bg); color: var(--green); }
 .statusRed { background: var(--red-bg); color: var(--red); }
 .cellActions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
-.payBtn { padding: 6px 12px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
+.payBtn { padding: 6px 12px; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
 .payBtn:hover { opacity: 0.9; }
 .paySavedBtn { padding: 6px 12px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
 .paySavedBtn:hover { border-color: var(--accent); color: var(--accent); }
@@ -36,7 +36,7 @@
 .mpesaSentText { font-size: 15px; color: var(--text); margin-bottom: 8px; }
 .mpesaSentHint { font-size: 13px; color: var(--text2); margin-bottom: 20px; }
 .btnSecondary { padding: 8px 16px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); border-radius: var(--radius-sm); font-size: 14px; cursor: pointer; }
-.btnPrimary { padding: 8px 16px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; }
+.btnPrimary { padding: 8px 16px; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; }
 .btnPrimary:disabled { opacity: 0.7; cursor: not-allowed; }
 
 .cancelledBanner { background: var(--amber-bg, #FFF8E1); color: var(--amber, #F57F17); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 14px; }

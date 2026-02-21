@@ -6,7 +6,7 @@
 .label { display: flex; flex-direction: column; gap: 6px; font-size: 14px; font-weight: 500; color: var(--text); }
 .input { padding: 12px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 15px; background: var(--surface); color: var(--text); }
 .input:focus { outline: none; border-color: var(--accent); }
-.btn { padding: 12px 20px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; align-self: flex-start; }
+.btn { padding: 12px 20px; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-sm); font-size: 15px; font-weight: 600; cursor: pointer; align-self: flex-start; }
 .btn:disabled { opacity: 0.7; cursor: not-allowed; }
 .section { margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border); }
 .subtitle { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 8px; }

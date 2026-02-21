@@ -35,7 +35,7 @@
   font-family: 'Syne', sans-serif;
   font-weight: 800;
   font-size: 15px;
-  color: #fff;
+  color: var(--on-accent);
   letter-spacing: -0.5px;
   flex-shrink: 0;
   position: relative;
@@ -148,7 +148,7 @@
 .navBadge {
   margin-left: auto;
   background: var(--accent);
-  color: #fff;
+  color: var(--on-accent);
   font-size: 10px;
   font-weight: 600;
   padding: 1px 6px;
@@ -186,7 +186,7 @@
   font-family: 'Syne', sans-serif;
   font-weight: 700;
   font-size: 13px;
-  color: #fff;
+  color: var(--on-accent);
   flex-shrink: 0;
 }
 

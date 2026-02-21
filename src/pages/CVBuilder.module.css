@@ -27,7 +27,7 @@
 .removeBtn { margin-top: 10px; font-size: 12px; color: var(--text3); background: none; border: none; cursor: pointer; padding: 0; }
 .removeBtn:hover { color: var(--accent); }
 .previewHead { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.copyBtn { padding: 8px 14px; font-size: 13px; font-weight: 500; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); cursor: pointer; }
+.copyBtn { padding: 8px 14px; font-size: 13px; font-weight: 500; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-sm); cursor: pointer; }
 .copyBtn:hover:not(:disabled) { opacity: 0.9; }
 .copyBtn:disabled { opacity: 0.6; cursor: not-allowed; }
 .preview { font-size: 12px; line-height: 1.6; color: var(--text2); white-space: pre-wrap; word-break: break-word; max-height: 480px; overflow-y: auto; margin: 0; font-family: 'DM Sans', sans-serif; }

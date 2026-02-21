@@ -10,7 +10,7 @@
 .statValue { font-size: 28px; font-weight: 700; color: var(--text); display: block; }
 .statLabel { font-size: 13px; color: var(--text2); }
 .toolbar { margin-bottom: 16px; }
-.btnPrimary { padding: 10px 18px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
+.btnPrimary { padding: 10px 18px; background: var(--accent); color: var(--on-accent); border: none; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; cursor: pointer; font-family: inherit; }
 .btnPrimary:hover { opacity: 0.9; }
 .btnSecondary { padding: 10px 18px; border: 1px solid var(--border); background: var(--surface); color: var(--text2); border-radius: var(--radius-sm); font-size: 14px; cursor: pointer; font-family: inherit; margin-right: 8px; }
 .formCard { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; margin-bottom: 24px; max-width: 560px; }
