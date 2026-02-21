@@ -85,16 +85,21 @@ export default function Applications() {
   const handlePayFor = (id) => {
     setPayError('')
     setPaying(true)
+    const popup = window.open('about:blank', '_blank', 'noopener,noreferrer')
     applicationService.pay(id)
       .then(res => {
         const link = res.data?.paymentLink
-        if (link) {
-          window.open(link, '_blank', 'noopener,noreferrer')
+        if (link && popup) {
+          popup.location.href = link
           return
         }
-        refresh()
+        if (popup) popup.close()
+        if (!link) refresh()
       })
-      .catch(err => setPayError(err.response?.data?.message || 'Payment request failed.'))
+      .catch(err => {
+        if (popup) popup.close()
+        setPayError(err.response?.data?.message || 'Payment request failed.')
+      })
       .finally(() => setPaying(false))
   }
 
