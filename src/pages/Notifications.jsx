@@ -38,10 +38,10 @@ export default function Notifications() {
       .then(data => {
         setActivity(Array.isArray(data) ? data.map(a => {
           const opp = a.opportunity || {}
-          const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
+          const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : a.status === 'pending_payment' ? 'Pending payment' : 'Application submitted'
           return {
             id: a._id || a.id,
-            type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue',
+            type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : a.status === 'pending_payment' ? 'orange' : 'blue',
             statusPhrase,
             title: opp.title || 'Role',
             company: opp.company || 'Company',

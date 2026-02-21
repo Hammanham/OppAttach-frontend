@@ -180,8 +180,8 @@ export default function Dashboard({ setActiveNav }) {
     dashboardService.getActivity(10).then(r => r.data).then(activityData => {
       setActivity(activityData.map((a) => {
         const opp = a.opportunity || {}
-        const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
-        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
+        const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : a.status === 'pending_payment' ? 'Pending payment' : 'Application submitted'
+        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : a.status === 'pending_payment' ? 'orange' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
       }))
     }).catch(() => {})
   }
@@ -208,8 +208,8 @@ export default function Dashboard({ setActiveNav }) {
       setStats(statsData)
       setActivity(activityData.map((a) => {
         const opp = a.opportunity || {}
-        const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
-        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
+        const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : a.status === 'pending_payment' ? 'Pending payment' : 'Application submitted'
+        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : a.status === 'pending_payment' ? 'orange' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
       }))
       setApplications(Array.isArray(appsData) ? appsData.map((a, i) => {
         const opp = a.opportunityId || {}
@@ -296,9 +296,8 @@ export default function Dashboard({ setActiveNav }) {
           dashboardService.getActivity(10).then(r => r.data).then(activityData => {
             setActivity(activityData.map((a) => {
               const opp = a.opportunity || {}
-              const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
-              const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
-              return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', text, time: formatActivityTime(a.createdAt) }
+              const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : a.status === 'pending_payment' ? 'Pending payment' : 'Application submitted'
+              return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : a.status === 'pending_payment' ? 'orange' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
             }))
           }).catch(() => {})
         }}
