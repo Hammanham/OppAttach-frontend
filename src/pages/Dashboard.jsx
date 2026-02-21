@@ -120,7 +120,9 @@ function ActivityItem({ item }) {
     <div className="activity-item">
       <div className={`activity-dot dot-${item.type}`} />
       <div>
-        <div className="activity-text" dangerouslySetInnerHTML={{ __html: item.text }} />
+        <div className="activity-text">
+          <strong>{item.statusPhrase}</strong> — {item.title} at {item.company}
+        </div>
         <div className="activity-time">{item.time}</div>
       </div>
     </div>
@@ -179,8 +181,7 @@ export default function Dashboard({ setActiveNav }) {
       setActivity(activityData.map((a) => {
         const opp = a.opportunity || {}
         const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
-        const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
-        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', text, time: formatActivityTime(a.createdAt) }
+        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
       }))
     }).catch(() => {})
   }
@@ -205,11 +206,10 @@ export default function Dashboard({ setActiveNav }) {
     ]).then(([statsData, activityData, appsData, recData, savedData]) => {
       if (cancelled) return
       setStats(statsData)
-      setActivity(activityData.map((a, i) => {
+      setActivity(activityData.map((a) => {
         const opp = a.opportunity || {}
         const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
-        const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
-        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', text, time: formatActivityTime(a.createdAt) }
+        return { id: a._id || a.id, type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue', statusPhrase, title: opp.title || 'Role', company: opp.company || 'Company', time: formatActivityTime(a.createdAt) }
       }))
       setApplications(Array.isArray(appsData) ? appsData.map((a, i) => {
         const opp = a.opportunityId || {}

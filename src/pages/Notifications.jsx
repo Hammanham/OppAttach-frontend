@@ -19,7 +19,9 @@ function ActivityItem({ item }) {
     <div className={styles.item}>
       <div className={`${styles.dot} ${styles[`dot_${item.type}`]}`} />
       <div className={styles.content}>
-        <div className={styles.text} dangerouslySetInnerHTML={{ __html: item.text }} />
+        <div className={styles.text}>
+          <strong>{item.statusPhrase}</strong> — {item.title} at {item.company}
+        </div>
         <div className={styles.time}>{item.time}</div>
       </div>
     </div>
@@ -37,11 +39,12 @@ export default function Notifications() {
         setActivity(Array.isArray(data) ? data.map(a => {
           const opp = a.opportunity || {}
           const statusPhrase = a.status === 'accepted' ? 'Accepted' : a.status === 'rejected' ? 'Not selected' : 'Application submitted'
-          const text = `<strong>${statusPhrase}</strong> — ${opp.title || 'Role'} at ${opp.company || 'Company'}`
           return {
             id: a._id || a.id,
             type: a.status === 'accepted' ? 'green' : a.status === 'rejected' ? 'amber' : 'blue',
-            text,
+            statusPhrase,
+            title: opp.title || 'Role',
+            company: opp.company || 'Company',
             time: formatActivityTime(a.createdAt),
           }
         }) : [])
