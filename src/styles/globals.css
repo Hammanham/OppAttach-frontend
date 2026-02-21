@@ -4,19 +4,19 @@
 
 /* ─── DESIGN TOKENS ─────────────────────────────────────────── */
 :root {
-  /* Light theme */
-  --bg:        #F7F4EF;
-  --bg2:       #EDE8DF;
+  /* Light theme — Deep Teal + Warm Cream */
+  --bg:        #F5F3F0;
+  --bg2:       #EBE8E4;
   --surface:   #FFFFFF;
-  --surface2:  #F0EBE3;
-  --border:    #DDD6C8;
-  --text:      #1A1714;
-  --text2:     #6B6459;
-  --text3:     #7A7268;
-  --accent:    #C75B2B;
+  --surface2:  #F8F6F3;
+  --border:    #D9D4CD;
+  --text:      #1A1D1C;
+  --text2:     #5A615E;
+  --text3:     #7A817D;
+  --accent:    #0F766E;
   --on-accent: #FFFFFF;
-  --accent2:   #E8936A;
-  --accent-bg: #FAE6DA;
+  --accent2:   #14B8A6;
+  --accent-bg: #CCFBF1;
   --green:     #2D6A4F;
   --green-bg:  #D8F3DC;
   --blue:      #1B4F8A;
@@ -25,26 +25,26 @@
   --amber-bg:  #FEF3C7;
   --red:       #B91C1C;
   --red-bg:    #FEE2E2;
-  --shadow:    0 2px 8px rgba(26,23,20,.07), 0 8px 32px rgba(26,23,20,.05);
-  --shadow-lg: 0 4px 16px rgba(26,23,20,.10), 0 16px 48px rgba(26,23,20,.08);
+  --shadow:    0 2px 8px rgba(15,118,110,.06), 0 8px 32px rgba(15,118,110,.04);
+  --shadow-lg: 0 4px 16px rgba(15,118,110,.08), 0 16px 48px rgba(15,118,110,.06);
   --radius:    14px;
   --radius-sm: 8px;
   --transition: .22s cubic-bezier(.4,0,.2,1);
 }
 
 [data-theme="dark"] {
-  --bg:        #131210;
-  --bg2:       #1C1A17;
-  --surface:   #221F1B;
-  --surface2:  #2A2621;
-  --border:    #38342D;
-  --text:      #F0EBE3;
-  --text2:     #A89E92;
-  --text3:     #9A9187;
+  --bg:        #0F1211;
+  --bg2:       #181C1B;
+  --surface:   #1E2221;
+  --surface2:  #252A29;
+  --border:    #343C3A;
+  --text:      #EDF2F1;
+  --text2:     #9BA8A5;
+  --text3:     #7A8986;
   --on-accent: #FFFFFF;
-  --accent:    #E8795A;
-  --accent2:   #C75B2B;
-  --accent-bg: #2E1A12;
+  --accent:    #2DD4BF;
+  --accent2:   #14B8A6;
+  --accent-bg: #0D2A27;
   --green:     #52B788;
   --green-bg:  #0E2519;
   --blue:      #74B3F0;

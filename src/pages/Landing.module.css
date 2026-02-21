@@ -175,13 +175,13 @@
   color: var(--on-accent);
   border: 1.5px solid transparent;
   transition: all .2s;
-  box-shadow: 0 2px 8px rgba(199,91,43,.3);
+  box-shadow: 0 2px 8px rgba(15,118,110,.3);
 }
 
 .btnFilled:hover {
   background: var(--accent2);
   transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(199,91,43,.35);
+  box-shadow: 0 4px 14px rgba(15,118,110,.35);
 }
 
 /* hamburger */
@@ -398,13 +398,13 @@
   color: var(--on-accent);
   border: 2px solid transparent;
   transition: all .22s ease;
-  box-shadow: 0 4px 16px rgba(199,91,43,.3);
+  box-shadow: 0 4px 16px rgba(15,118,110,.3);
 }
 
 .btnHeroPrimary:hover {
   background: var(--accent2);
   transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(199,91,43,.38);
+  box-shadow: 0 8px 24px rgba(15,118,110,.38);
 }
 
 a.btnHeroPrimary { text-decoration: none; color: var(--on-accent); }
@@ -910,7 +910,7 @@ a.btnHeroPrimary { text-decoration: none; color: var(--on-accent); }
   top: -80px; left: -80px;
   width: 400px; height: 400px;
   border-radius: 50%;
-  background: radial-gradient(circle, rgba(199,91,43,.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(15,118,110,.18) 0%, transparent 70%);
   pointer-events: none;
 }
 
@@ -958,7 +958,7 @@ a.btnHeroPrimary { text-decoration: none; color: var(--on-accent); }
 }
 
 .ctaBtns .btnHeroPrimary {
-  box-shadow: 0 4px 20px rgba(199,91,43,.5);
+  box-shadow: 0 4px 20px rgba(15,118,110,.5);
 }
 
 .ctaBtns .btnHeroGhost {

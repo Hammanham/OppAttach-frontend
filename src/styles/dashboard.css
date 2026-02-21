@@ -107,13 +107,13 @@
 .btn-primary {
   background: var(--accent);
   color: var(--on-accent);
-  box-shadow: 0 2px 8px rgba(199, 91, 43, .3);
+  box-shadow: 0 2px 8px rgba(15, 118, 110, .3);
 }
 
 .btn-primary:hover {
   background: var(--accent2);
   transform: translateY(-1px);
-  box-shadow: 0 4px 16px rgba(199, 91, 43, .35);
+  box-shadow: 0 4px 16px rgba(15, 118, 110, .35);
 }
 
 .btn-ghost {
