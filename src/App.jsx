@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, Navigate, useNavigate, useLocation } from 'react-router-dom'
 import { ThemeProvider } from './context/ThemeContext'
 import { AuthProvider, useAuth } from './context/AuthContext'
@@ -7,6 +7,7 @@ import Topbar    from './components/Topbar'
 import Landing   from './pages/Landing'
 import Dashboard from './pages/Dashboard'
 import Login     from './pages/Login'
+import ResetPassword from './pages/ResetPassword'
 import Browse    from './pages/Browse'
 import Applications from './pages/Applications'
 import Saved     from './pages/Saved'
@@ -17,6 +18,7 @@ import CVBuilder from './pages/CVBuilder'
 import CareerGuidance from './pages/CareerGuidance'
 import Settings  from './pages/Settings'
 import AdminDashboard from './pages/AdminDashboard'
+import { authService } from './services/api'
 
 const PAGE_TITLES = {
   dashboard:    'Dashboard',
@@ -48,7 +50,21 @@ function AppShell() {
   const setActiveNav = (id) => navigate(`/app/${id}`)
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [verifiedMessage, setVerifiedMessage] = useState(null)
+  const [resendStatus, setResendStatus] = useState('')
   const { user: authUser, logout, refreshUser } = useAuth()
+
+  const handleResendVerification = async () => {
+    if (resendStatus === 'sending') return
+    setResendStatus('sending')
+    try {
+      const res = await authService.resendVerification()
+      setResendStatus(res.data?.message?.includes('sent') ? 'sent' : 'sent')
+      setTimeout(() => setResendStatus(''), 5000)
+    } catch {
+      setResendStatus('error')
+      setTimeout(() => setResendStatus(''), 5000)
+    }
+  }
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -100,8 +116,16 @@ function AppShell() {
         </div>
       )}
       {authUser && !authUser.emailVerified && !verifiedMessage && (
-        <div style={{ background: 'var(--blue-bg)', color: 'var(--blue)', padding: '10px 24px', textAlign: 'center', fontSize: '14px' }}>
-          Please check your email to verify your account. Click the link we sent you.
+        <div style={{ background: 'var(--blue-bg)', color: 'var(--blue)', padding: '10px 24px', textAlign: 'center', fontSize: '14px', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, flexWrap: 'wrap' }}>
+          Please check your email to verify your account.
+          <button
+            type="button"
+            onClick={handleResendVerification}
+            disabled={resendStatus === 'sending'}
+            style={{ background: 'transparent', border: 'none', color: 'inherit', textDecoration: 'underline', cursor: resendStatus === 'sending' ? 'wait' : 'pointer', fontWeight: 600 }}
+          >
+            {resendStatus === 'sending' ? 'Sending…' : resendStatus === 'sent' ? 'Email sent!' : resendStatus === 'error' ? 'Try again' : 'Resend verification email'}
+          </button>
         </div>
       )}
       <Sidebar
@@ -154,13 +178,26 @@ function LoginRoute({ mode }) {
       </div>
     )
   }
-  if (user) return <Navigate to="/app" /> 
+  if (user) return <Navigate to="/app" />
   return (
     <Login
       mode={mode}
       onBack={() => navigate('/')}
     />
   )
+}
+
+function ResetPasswordRoute() {
+  const { user, loading } = useAuth()
+  if (loading) {
+    return (
+      <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', color: 'var(--text2)' }}>
+        Loading…
+      </div>
+    )
+  }
+  if (user) return <Navigate to="/app" />
+  return <ResetPassword />
 }
 
 function AppRoute() {
@@ -186,6 +223,7 @@ export default function App() {
             <Route path="/" element={<LandingRoute />} />
             <Route path="/login" element={<LoginRoute mode="login" />} />
             <Route path="/signup" element={<LoginRoute mode="register" />} />
+            <Route path="/reset-password" element={<ResetPasswordRoute />} />
             <Route path="/app" element={<Navigate to="/app/dashboard" replace />} />
             <Route path="/app/:page" element={<AppRoute />} />
             <Route path="*" element={<Navigate to="/" replace />} />

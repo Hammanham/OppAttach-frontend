@@ -1,11 +1,12 @@
 import { useState, useEffect, useRef } from 'react'
 import { useAuth } from '../context/AuthContext'
+import { authService } from '../services/api'
 import styles from './Login.module.css'
 
 const GOOGLE_CLIENT_ID = import.meta.env.VITE_GOOGLE_CLIENT_ID || ''
 
 export default function Login({ onBack, mode: initialMode = 'login' }) {
-  const [mode, setMode] = useState(initialMode) // 'login' | 'register'
+  const [mode, setMode] = useState(initialMode) // 'login' | 'register' | 'forgot'
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
@@ -65,10 +66,15 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
   const handleSubmit = async (e) => {
     e.preventDefault()
     setError('')
+    setVerificationMessage('')
     setLoading(true)
     try {
       if (mode === 'login') {
         await login({ email, password })
+      } else if (mode === 'forgot') {
+        const res = await authService.forgotPassword(email)
+        setVerificationMessage(res.data?.message || 'If an account exists, a reset link has been sent.')
+        setMode('login')
       } else {
         const data = await register({ name, email, password, role })
         if (data?.verificationEmailSent && data?.message) {
@@ -98,9 +104,14 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
           </button>
         )}
         <div className={styles.logo}>IAS</div>
-        <h1 className={styles.title}>{mode === 'login' ? 'Log in' : 'Sign up'}</h1>
+        <h1 className={styles.title}>
+          {mode === 'login' ? 'Log in' : mode === 'forgot' ? 'Forgot password' : 'Sign up'}
+        </h1>
         {mode === 'register' && (
           <p className={styles.sub}>Create an account to browse and apply for opportunities.</p>
+        )}
+        {mode === 'forgot' && (
+          <p className={styles.sub}>Enter your email and we’ll send you a link to reset your password.</p>
         )}
 
         <form onSubmit={handleSubmit} className={styles.form}>
@@ -150,24 +161,38 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
               placeholder="you@example.com"
             />
           </label>
-          <label className={styles.label}>
-            Password
-            <input
-              type="password"
-              className={styles.input}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
-              placeholder={mode === 'login' ? '••••••••' : 'At least 6 characters'}
-              minLength={mode === 'register' ? 6 : undefined}
-            />
-          </label>
+          {(mode === 'login' || mode === 'register') && (
+            <label className={styles.label}>
+              Password
+              <input
+                type="password"
+                className={styles.input}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                autoComplete={mode === 'login' ? 'current-password' : 'new-password'}
+                placeholder={mode === 'login' ? '••••••••' : 'At least 6 characters'}
+                minLength={mode === 'register' ? 6 : undefined}
+              />
+            </label>
+          )}
+          {mode === 'login' && (
+            <div style={{ textAlign: 'right', marginTop: -8 }}>
+              <button
+                type="button"
+                className={styles.toggleLink}
+                onClick={() => { setMode('forgot'); setError(''); setVerificationMessage(''); }}
+                style={{ textDecoration: 'underline', fontSize: 14 }}
+              >
+                Forgot password?
+              </button>
+            </div>
+          )}
           <button type="submit" className={styles.submitBtn} disabled={loading}>
-            {loading ? 'Please wait…' : mode === 'login' ? 'Log in' : 'Sign up'}
+            {loading ? 'Please wait…' : mode === 'login' ? 'Log in' : mode === 'forgot' ? 'Send reset link' : 'Sign up'}
           </button>
 
-          {GOOGLE_CLIENT_ID && (
+          {GOOGLE_CLIENT_ID && (mode === 'login' || mode === 'register') && (
             <>
               <div className={styles.divider}>or</div>
               <div ref={googleButtonRef} className={styles.googleBtnWrap} />
@@ -176,11 +201,24 @@ export default function Login({ onBack, mode: initialMode = 'login' }) {
         </form>
 
         <p className={styles.toggle}>
-          {mode === 'login' ? "Don't have an account?" : 'Already have an account?'}
-          {' '}
-          <button type="button" className={styles.toggleLink} onClick={() => { setMode(mode === 'login' ? 'register' : 'login'); setError(''); setVerificationMessage(''); }}>
-            {mode === 'login' ? 'Sign up' : 'Log in'}
-          </button>
+          {mode === 'login' && "Don't have an account? "}
+          {mode === 'login' && (
+            <button type="button" className={styles.toggleLink} onClick={() => { setMode('register'); setError(''); setVerificationMessage(''); }}>
+              Sign up
+            </button>
+          )}
+          {mode === 'register' && 'Already have an account? '}
+          {mode === 'register' && (
+            <button type="button" className={styles.toggleLink} onClick={() => { setMode('login'); setError(''); setVerificationMessage(''); }}>
+              Log in
+            </button>
+          )}
+          {mode === 'forgot' && 'Remember your password? '}
+          {mode === 'forgot' && (
+            <button type="button" className={styles.toggleLink} onClick={() => { setMode('login'); setError(''); setVerificationMessage(''); }}>
+              Log in
+            </button>
+          )}
         </p>
       </div>
     </div>

@@ -58,12 +58,15 @@ api.interceptors.response.use(
 // AUTH
 // ══════════════════════════════════════════════════════════════
 export const authService = {
-  register:   (data)        => api.post('/auth/register', data),
-  login:      (credentials) => api.post('/auth/login', credentials),
-  loginGoogle: (idToken, role) => api.post('/auth/google', { idToken, role }),
-  logout:     ()            => api.post('/auth/logout'),
-  me:         ()            => api.get('/auth/me'),
-  refresh:    ()            => api.post('/auth/refresh'),
+  register:        (data)        => api.post('/auth/register', data),
+  login:           (credentials) => api.post('/auth/login', credentials),
+  loginGoogle:     (idToken, role) => api.post('/auth/google', { idToken, role }),
+  logout:          ()            => api.post('/auth/logout'),
+  me:              ()            => api.get('/auth/me'),
+  refresh:         ()            => api.post('/auth/refresh'),
+  forgotPassword:  (email)       => api.post('/auth/forgot-password', { email }),
+  resetPassword:   (token, password) => api.post('/auth/reset-password', { token, password }),
+  resendVerification: (email)    => api.post('/auth/resend-verification', email ? { email } : {}),
 }
 
 // ══════════════════════════════════════════════════════════════
