@@ -115,8 +115,12 @@ export const applicationService = {
   chargeMpesa: (id, phone) => api.post(`/applications/${id}/charge-mpesa`, { phone }),
   update:      (id, d)  => api.patch(`/applications/${id}`, d),
   withdraw:    (id)     => api.delete(`/applications/${id}`),
+  verifyPayment: (reference) => api.post('/applications/verify-payment', { reference }),
+  chargeSavedCard: (id) => api.post(`/applications/${id}/charge-saved-card`),
   getAllAdmin: (params) => api.get('/applications/admin/all', { params }),
   updateStatusAdmin: (id, status) => api.patch(`/applications/admin/${id}/status`, { status }),
+  refundAdmin: (id, reason) => api.post(`/applications/admin/${id}/refund`, { reason }),
+  transferMpesaAdmin: (data) => api.post('/applications/admin/transfer-mpesa', data),
 }
 
 // ══════════════════════════════════════════════════════════════

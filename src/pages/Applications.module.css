@@ -15,6 +15,8 @@
 .cellActions { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .payBtn { padding: 6px 12px; background: var(--accent); color: white; border: none; border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
 .payBtn:hover { opacity: 0.9; }
+.paySavedBtn { padding: 6px 12px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
+.paySavedBtn:hover { border-color: var(--accent); color: var(--accent); }
 .removeBtn { padding: 6px 12px; background: transparent; color: var(--text3); border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 13px; cursor: pointer; font-family: inherit; }
 .removeBtn:hover { color: var(--red); border-color: var(--red); background: var(--red-bg); }
 .removeBtn:disabled { opacity: 0.6; cursor: not-allowed; }

@@ -11,6 +11,7 @@ export default function AdminDashboard() {
   const [showForm, setShowForm] = useState(false)
   const [editing, setEditing] = useState(null)
   const [form, setForm] = useState({ title: '', company: '', type: 'internship', description: '', location: '', duration: '', applicationFee: 350, isActive: true })
+  const [refunding, setRefunding] = useState(null)
 
   useEffect(() => {
     dashboardService.getStats()
@@ -81,6 +82,17 @@ export default function AdminDashboard() {
         setApplications(prev => prev.map(a => a._id === appId ? { ...a, status: res.data.status } : a))
       })
       .catch(() => {})
+  }
+
+  const handleRefund = (app) => {
+    if (!window.confirm(`Refund KES ${app.amountPaid ?? app.opportunityId?.applicationFee ?? 350} to ${app.userId?.name || app.userId?.email}?`)) return
+    setRefunding(app._id)
+    applicationService.refundAdmin(app._id)
+      .then(() => {
+        setApplications(prev => prev.map(a => a._id === app._id ? { ...a, refundedAt: new Date().toISOString() } : a))
+      })
+      .catch(err => alert(err.response?.data?.message || 'Refund failed'))
+      .finally(() => setRefunding(null))
   }
 
   if (loading && !stats) {
@@ -185,6 +197,7 @@ export default function AdminDashboard() {
                 <th>Opportunity</th>
                 <th>Documents</th>
                 <th>Status</th>
+                <th>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -216,6 +229,20 @@ export default function AdminDashboard() {
                         ))}
                       </select>
                     )}
+                  </td>
+                  <td>
+                    {!app.refundedAt && app.status !== 'pending_payment' && app.paymentTransactionId && (
+                      <button
+                        type="button"
+                        className={styles.refundBtn}
+                        onClick={() => handleRefund(app)}
+                        disabled={refunding === app._id}
+                        title="Refund to original payment method"
+                      >
+                        {refunding === app._id ? '…' : 'Refund'}
+                      </button>
+                    )}
+                    {app.refundedAt && <span className={styles.refunded}>Refunded</span>}
                   </td>
                 </tr>
               ))}

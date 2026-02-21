@@ -38,3 +38,7 @@
 .docLink:hover { text-decoration: underline; }
 .email { font-size: 12px; color: var(--text3); margin-top: 2px; }
 .linkBtn { background: none; border: none; color: var(--accent); font-size: 14px; cursor: pointer; text-decoration: underline; padding: 0; }
+.refundBtn { padding: 6px 12px; font-size: 12px; background: transparent; color: var(--text2); border: 1px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; }
+.refundBtn:hover { color: var(--red); border-color: var(--red); }
+.refundBtn:disabled { opacity: 0.6; cursor: not-allowed; }
+.refunded { font-size: 12px; color: var(--text3); }

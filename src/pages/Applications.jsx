@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '../context/AuthContext'
 import { applicationService } from '../services/api'
 import styles from './Applications.module.css'
 
@@ -20,6 +21,8 @@ const STATUS_CLASS = {
 }
 
 export default function Applications() {
+  const { user: authUser, refreshUser } = useAuth()
+  const hasSavedCard = !!authUser?.hasSavedCard
   const [list, setList] = useState([])
   const [loading, setLoading] = useState(true)
   const [payError, setPayError] = useState('')
@@ -48,13 +51,22 @@ export default function Applications() {
       window.history.replaceState({}, '', window.location.pathname)
       setTimeout(() => setShowCancelledMessage(false), 4000)
     } else if (params.get('payment') === 'done') {
+      const reference = params.get('reference') || params.get('trxref')
+      if (reference && reference.startsWith('APP-')) {
+        applicationService.verifyPayment(reference)
+          .then(res => {
+            if (res.data?.verified) {
+              refresh()
+              refreshUser?.()
+            }
+          })
+          .catch(() => {})
+      } else {
+        refresh()
+      }
       setShowSuccessPopup(true)
       window.history.replaceState({}, '', window.location.pathname)
-      const t = setTimeout(() => {
-        applicationService.getAll()
-          .then(res => setList(Array.isArray(res.data) ? res.data : []))
-          .catch(() => {})
-      }, 1500)
+      const t = setTimeout(() => refresh(), 1500)
       const hideT = setTimeout(() => setShowSuccessPopup(false), 5000)
       return () => { clearTimeout(t); clearTimeout(hideT) }
     }
@@ -83,6 +95,17 @@ export default function Applications() {
         refresh()
       })
       .catch(err => setPayError(err.response?.data?.message || 'Payment request failed.'))
+      .finally(() => setPaying(false))
+  }
+
+  const handlePaySavedCard = (id) => {
+    setPayError('')
+    setPaying(true)
+    applicationService.chargeSavedCard(id)
+      .then(() => {
+        refresh()
+      })
+      .catch(err => setPayError(err.response?.data?.message || 'Charge failed.'))
       .finally(() => setPaying(false))
   }
 
@@ -150,7 +173,14 @@ export default function Applications() {
                 <td>
                   <div className={styles.cellActions}>
                     {app.status === 'pending_payment' && (
-                      <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>
+                      <>
+                        {hasSavedCard && (
+                          <button type="button" className={styles.paySavedBtn} onClick={() => handlePaySavedCard(app._id)} disabled={paying}>
+                            Pay with card
+                          </button>
+                        )}
+                        <button type="button" className={styles.payBtn} onClick={() => handlePayFor(app._id)} disabled={paying}>Pay now</button>
+                      </>
                     )}
                     {(app.status === 'pending_payment' || app.status === 'submitted') && (
                       <button type="button" className={styles.removeBtn} onClick={() => handleRemove(app._id)} disabled={removing}>
